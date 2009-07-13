@@ -1,0 +1,94 @@
+package com.eatnumber1.util.cglib;
+
+import com.eatnumber1.util.concurrent.lock.LockProvider;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import net.sf.cglib.proxy.Callback;
+import net.sf.cglib.proxy.CallbackFilter;
+import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.MethodInterceptor;
+import net.sf.cglib.proxy.MethodProxy;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+/**
+ * @author Russell Harmon
+ */
+public class EnhancerUtils {
+    private EnhancerUtils() {
+    }
+
+    private static Enhancer getEnhancer( @NotNull Class<?> type, @Nullable Class<?>... interfaces ) {
+        Enhancer enhancer = new Enhancer();
+        List<Class<?>> interfaceList = interfaces == null ? new ArrayList<Class<?>>() : new ArrayList<Class<?>>(Arrays.asList(interfaces));
+        if( type.isInterface() ) {
+            interfaceList.add(type);
+        } else {
+            enhancer.setSuperclass(type);
+        }
+        enhancer.setInterfaces(interfaceList.toArray(new Class<?>[interfaceList.size()]));
+        return enhancer;
+    }
+
+    @NotNull
+    public static <T> T create( @NotNull final Class<T> type, @NotNull Callback... callbacks ) {
+        return create(new NoArgConstructorDescriptor<T>(type), callbacks);
+    }
+
+    @NotNull
+    public static <T> T create( @NotNull ConstructorDescriptor<T> descriptor, @NotNull Callback... callbacks ) {
+        Enhancer enhancer = getEnhancer(descriptor.getType(), (Class<?>[]) null);
+        enhancer.setCallbacks(callbacks);
+        //noinspection unchecked
+        return (T) enhancer.create(descriptor.getArgumentTypes(), descriptor.getArguments());
+    }
+
+    @NotNull
+    public static <T> T synchronize( @NotNull T delegate ) {
+        //noinspection unchecked
+        return synchronize((Class<T>) delegate.getClass(), delegate);
+    }
+
+    @NotNull
+    public static <T, D extends T> T synchronize( @NotNull Class<T> type, @NotNull D delegate ) {
+        return synchronize(type, delegate, new ReentrantLock());
+    }
+
+    @NotNull
+    public static <T, D extends T> T synchronize( @NotNull ConstructorDescriptor<T> descriptor, @NotNull D delegate ) {
+        return synchronize(descriptor, delegate, new ReentrantLock());
+    }
+
+    @NotNull
+    public static <T, D extends T> T synchronize( @NotNull Class<T> type, @NotNull D delegate, @NotNull Lock lock ) {
+        return synchronize(new NoArgConstructorDescriptor<T>(type), delegate, lock);
+    }
+
+    @NotNull
+    public static <T, D extends T> T synchronize( @NotNull ConstructorDescriptor<T> descriptor, @NotNull D delegate, @NotNull Lock lock ) {
+        Enhancer enhancer = getEnhancer(descriptor.getType(), LockProvider.class);
+        enhancer.setCallbackFilter(new CallbackFilter() {
+            private Collection<Method> LOCK_PROVIDER_METHODS = Collections.unmodifiableCollection(Arrays.asList(LockProvider.class.getMethods()));
+
+            @Override
+            public int accept( Method method ) {
+                return LOCK_PROVIDER_METHODS.contains(method) ? 1 : 0;
+            }
+        });
+        final SynchronizedMethodInterceptor interceptor = new SynchronizedMethodInterceptor<D>(delegate, lock);
+        enhancer.setCallbacks(new Callback[] { interceptor, new MethodInterceptor() {
+            @Override
+            public Object intercept( Object o, Method method, Object[] objects, MethodProxy methodProxy ) throws Throwable {
+                return method.invoke(interceptor, objects);
+            }
+        } });
+        //noinspection unchecked
+        return (T) enhancer.create(descriptor.getArgumentTypes(), descriptor.getArguments());
+    }
+}

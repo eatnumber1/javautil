@@ -306,15 +306,15 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="Maven: ant:ant-commons-logging:1.6.5">
+    <library name="Maven: log4j:log4j:1.2.9">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/ant/ant-commons-logging/1.6.5/ant-commons-logging-1.6.5.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/log4j/log4j/1.2.9/log4j-1.2.9.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/ant/ant-commons-logging/1.6.5/ant-commons-logging-1.6.5-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/log4j/log4j/1.2.9/log4j-1.2.9-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/ant/ant-commons-logging/1.6.5/ant-commons-logging-1.6.5-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/log4j/log4j/1.2.9/log4j-1.2.9-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: junit:junit:4.6">
@@ -392,6 +392,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/net/jcip/jcip-annotations/1.0/jcip-annotations-1.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: commons-logging:commons-logging:1.1.1">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/commons-logging/commons-logging/1.1.1/commons-logging-1.1.1-sources.jar!/" />
       </SOURCES>
     </library>
   </component>

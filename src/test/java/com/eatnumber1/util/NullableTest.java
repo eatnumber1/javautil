@@ -17,6 +17,7 @@
 package com.eatnumber1.util;
 
 import org.jetbrains.annotations.NotNull;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -26,14 +27,10 @@ import org.junit.Test;
 public class NullableTest {
     private void notNull( @NotNull Object obj ) {}
 
-    @Test
+    @Ignore("Disabled until integration of javac2.")
+    @Test(expected = IllegalArgumentException.class)
     public void nullable() {
-        // Disabled until integration of javac2.
-        /*try {
-            notNull(null);
-            Assert.fail("@NotNull was not enforced.");
-        } catch( IllegalArgumentException e ) {
-            // Do nothing
-        }*/
+        //noinspection ConstantConditions
+        notNull(null);
     }
 }

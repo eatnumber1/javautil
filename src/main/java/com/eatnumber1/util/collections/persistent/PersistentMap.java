@@ -18,11 +18,11 @@ package com.eatnumber1.util.collections.persistent;
 
 import java.io.Closeable;
 import java.io.Flushable;
+import org.apache.commons.collections15.IterableMap;
 
 /**
  * @author Russell Harmon
  * @since Jul 14, 2009
  */
-public interface FileBacked extends Closeable, Flushable {
-    public boolean isMapped();
+public interface PersistentMap<K, V> extends IterableMap<K, V>, Closeable, Flushable {
 }

@@ -16,17 +16,20 @@
 
 package com.eatnumber1.util.collections.persistent;
 
+import com.eatnumber1.util.collections.persistent.numbers.FileBackedInteger;
+import com.eatnumber1.util.collections.persistent.numbers.FileBackedUnmappedInteger;
 import com.eatnumber1.util.collections.persistent.provider.PersistenceProvider;
+import com.eatnumber1.util.collections.persistent.provider.XMLPersistenceProvider;
+import com.eatnumber1.util.io.FileUtils;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.lang.reflect.Array;
+import java.util.AbstractSet;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
-import org.apache.commons.io.FileUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Russell Harmon
  * @since Jul 14, 2009
  */
-public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSet<T> {
+public class FileBackedHashSet<T> extends AbstractSet<T> implements FileBackedSet<T> {
     @NotNull
     private static final String NULL_FILE = "NULL";
 
@@ -45,18 +48,64 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
     private PersistenceProvider<T> persistenceProvider;
 
     @NotNull
-    private File dataDirectory, nullFile;
+    private File nullFile;
 
-    public FileBackedHashSet( @NotNull File directory, boolean map, @NotNull PersistenceProvider<T> persistenceProvider ) throws IOException {
-        super(directory, map);
+    @NotNull
+    protected File dataDirectory;
+
+    @NotNull
+    private FileBackedInteger size;
+
+    public FileBackedHashSet() throws IOException {
+        File directory = FileUtils.createTempDirectory("FileBackedHashSet");
+        FileUtils.forceDeleteOnExit(directory);
+        init(directory, new XMLPersistenceProvider<T>());
+    }
+
+    public FileBackedHashSet( @NotNull File directory, @NotNull PersistenceProvider<T> persistenceProvider ) throws IOException {
+        init(directory, persistenceProvider);
+    }
+
+    private void init( @NotNull File directory, @NotNull PersistenceProvider<T> persistenceProvider ) throws IOException {
+        size = newFileBackedInteger(new File(directory, "size"));
         dataDirectory = new File(directory, DATADIR_FILENAME);
-        com.eatnumber1.util.io.FileUtils.forceMkdir(dataDirectory);
+        FileUtils.forceMkdir(dataDirectory);
         this.persistenceProvider = persistenceProvider;
         this.nullFile = new File(dataDirectory, NULL_FILE);
     }
 
+    protected FileBackedInteger newFileBackedInteger( @NotNull File file ) throws IOException {
+        return new FileBackedUnmappedInteger(file);
+    }
+
+    @Override
     public boolean contains( Object o ) {
-        return com.eatnumber1.util.io.FileUtils.contains(dataDirectory, String.valueOf(o.hashCode()));
+        return FileUtils.contains(dataDirectory, String.valueOf(o.hashCode()));
+    }
+
+    @NotNull
+    File getDataDirectory() {
+        return dataDirectory;
+    }
+
+    @Nullable
+    T get( @NotNull String hash ) throws IOException, PersistenceException {
+        return persistenceProvider.fromBytes(FileUtils.readFileToByteArray(new File(dataDirectory, hash)));
+    }
+
+    boolean removeInternal( @Nullable String hash ) {
+        File file = hash == null ? nullFile : new File(dataDirectory, hash);
+        if( FileUtils.contains(dataDirectory, file) ) {
+            try {
+                FileUtils.forceDelete(file);
+            } catch( IOException e ) {
+                throw new RuntimeException(e);
+            }
+            setSize(size() - 1);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Iterator<T> iterator() {
@@ -89,33 +138,7 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
         };
     }
 
-    public Object[] toArray() {
-        List<T> list = new ArrayList<T>(size());
-        for( T obj : this ) {
-            list.add(obj);
-        }
-        return list.toArray();
-    }
-
-    public <T> T[] toArray( T[] a ) {
-        T[] array = a;
-        int size = size();
-        if( array.length < size ) {
-            //noinspection unchecked
-            array = (T[]) Array.newInstance(a.getClass(), size);
-        }
-        int count = 0;
-        //noinspection unchecked
-        Iterator<T> iter = (Iterator<T>) iterator();
-        while( count != size ) {
-            array[count++] = iter.next();
-        }
-        while( count != array.length ) {
-            array[count++] = null;
-        }
-        return array;
-    }
-
+    @Override
     public boolean add( T o ) {
         @Nullable
         byte[] bytes;
@@ -127,7 +150,7 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
         try {
             if( bytes == null ) {
                 if( !nullFile.exists() ) {
-                    com.eatnumber1.util.io.FileUtils.forceCreateNewFile(nullFile);
+                    FileUtils.forceCreateNewFile(nullFile);
                     setSize(size() + 1);
                     return true;
                 } else {
@@ -138,7 +161,7 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
                 if( file.exists() ) {
                     return false;
                 } else {
-                    com.eatnumber1.util.io.FileUtils.forceCreateNewFile(file);
+                    FileUtils.forceCreateNewFile(file);
                     FileUtils.writeByteArrayToFile(file, bytes);
                     setSize(size() + 1);
                     return true;
@@ -149,30 +172,22 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
         }
     }
 
+    @Override
     public boolean remove( Object o ) {
-        File file = new File(dataDirectory, String.valueOf(o.hashCode()));
-        if( com.eatnumber1.util.io.FileUtils.contains(dataDirectory, file) ) {
-            try {
-                FileUtils.forceDelete(file);
-            } catch( IOException e ) {
-                throw new RuntimeException(e);
-            }
-            setSize(size() - 1);
-            return true;
-        } else {
-            return false;
-        }
+        return removeInternal(o == null ? null : String.valueOf(o.hashCode()));
     }
 
+    @Override
     public boolean containsAll( Collection<?> c ) {
         List<String> files = Arrays.asList(dataDirectory.list());
         List<String> hashes = new ArrayList<String>(c.size());
         for( Object o : c ) {
-            hashes.add(String.valueOf(o.hashCode()));
+            hashes.add(o == null ? nullFile.getName() : String.valueOf(o.hashCode()));
         }
         return files.containsAll(hashes);
     }
 
+    @Override
     public boolean addAll( Collection<? extends T> c ) {
         boolean changed = false;
         for( T obj : c ) {
@@ -181,6 +196,7 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
         return changed;
     }
 
+    @Override
     public boolean removeAll( Collection<?> c ) {
         final List<String> hashes = new ArrayList<String>(c.size());
         for( Object o : c ) {
@@ -188,45 +204,49 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
         }
         boolean changed = false;
         int filesRemoved = 0;
-        for( File f : dataDirectory.listFiles(new FilenameFilter() {
-            public boolean accept( File dir, String name ) {
-                return hashes.contains(name);
-            }
-        }) ) {
-            try {
+        try {
+            for( File f : dataDirectory.listFiles(new FilenameFilter() {
+                public boolean accept( File dir, String name ) {
+                    return hashes.contains(name);
+                }
+            }) ) {
                 FileUtils.forceDelete(f);
                 filesRemoved++;
-            } catch( IOException e ) {
-                throw new RuntimeException(e);
+                changed = true;
             }
-            changed = true;
+            if( hashes.contains(null) ) FileUtils.forceDelete(nullFile);
+        } catch( IOException e ) {
+            throw new RuntimeException(e);
         }
         if( changed ) setSize(size() - filesRemoved);
         return changed;
     }
 
+    @Override
     public boolean retainAll( Collection<?> c ) {
         final List<String> hashes = new ArrayList<String>(c.size());
         for( Object o : c ) {
             hashes.add(String.valueOf(o.hashCode()));
         }
         boolean changed = false;
-        for( File f : dataDirectory.listFiles(new FilenameFilter() {
-            public boolean accept( File dir, String name ) {
-                return !hashes.contains(name);
-            }
-        }) ) {
-            try {
+        try {
+            for( File f : dataDirectory.listFiles(new FilenameFilter() {
+                public boolean accept( File dir, String name ) {
+                    return !hashes.contains(name);
+                }
+            }) ) {
                 FileUtils.forceDelete(f);
-            } catch( IOException e ) {
-                throw new RuntimeException(e);
+                changed = true;
             }
-            changed = true;
+            if( !hashes.contains(null) ) FileUtils.forceDelete(nullFile);
+        } catch( IOException e ) {
+            throw new RuntimeException(e);
         }
         if( changed ) setSize(dataDirectory.list().length);
         return changed;
     }
 
+    @Override
     public void clear() {
         setSize(0);
         try {
@@ -236,21 +256,20 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
         }
     }
 
-    @Override
-    public boolean equals( Object o ) {
-        if( this == o ) return true;
-        if( !( o instanceof FileBackedHashSet ) ) return false;
-
-        FileBackedHashSet that = (FileBackedHashSet) o;
-
-        return dataDirectory.equals(that.dataDirectory) && getDirectory().equals(that.getDirectory());
+    public int size() {
+        return size.intValue();
     }
 
-    @Override
-    public int hashCode() {
-        int result = dataDirectory.hashCode();
-        result = 31 * result + nullFile.hashCode();
-        return result;
+    public boolean isMapped() {
+        return false;
+    }
+
+    public void close() throws IOException {
+        size.close();
+    }
+
+    public void flush() throws IOException {
+        size.flush();
     }
 
     @Override
@@ -270,5 +289,9 @@ public class FileBackedHashSet<T> extends FileBackedSize implements FileBackedSe
 
         buf.append("]");
         return buf.toString();
+    }
+
+    protected void setSize( int size ) {
+        this.size.intValue(size);
     }
 }

@@ -16,9 +16,13 @@
 
 package com.eatnumber1.util.collections.persistent;
 
+import java.io.Closeable;
+import java.io.Flushable;
+
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
-public interface FileBackedCollection<T> extends PersistentCollection<T>, FileBacked {
+public interface FileBackedCollection<T> extends PersistentCollection<T>, Flushable, Closeable {
+    public boolean isMapped();
 }

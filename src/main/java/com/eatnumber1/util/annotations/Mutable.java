@@ -14,15 +14,20 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.collections.persistent;
+package com.eatnumber1.util.annotations;
 
-import java.io.Closeable;
-import java.io.Flushable;
-import java.util.Collection;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 14, 2009
  */
-public interface PersistentCollection<T> extends Collection<T>, Closeable, Flushable {
+@Documented
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Mutable {
 }

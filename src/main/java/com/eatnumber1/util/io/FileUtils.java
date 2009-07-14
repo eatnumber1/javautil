@@ -27,17 +27,21 @@ import java.util.WeakHashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
-public class FileUtils {
+public class FileUtils extends org.apache.commons.io.FileUtils {
     @NotNull
     private static Log log = LogFactory.getLog(FileUtils.class);
 
     @NotNull
     private static final Map<File, List<File>> fileElementCache = Collections.synchronizedMap(new WeakHashMap<File, List<File>>());
+
+    protected FileUtils() {
+    }
 
     /**
      * Checks if f2 is in a subdirectory of f1.
@@ -102,5 +106,28 @@ public class FileUtils {
 
     public static boolean contains( @NotNull File directory, @NotNull File file ) {
         return Arrays.asList(directory.listFiles()).contains(file);
+    }
+
+    @NotNull
+    public static File createTempFile( @NotNull String prefix ) throws IOException {
+        return File.createTempFile(prefix, null);
+    }
+
+    @NotNull
+    public static File createTempDirectory( @NotNull String prefix ) throws IOException {
+        return createTempDirectory(prefix, null);
+    }
+
+    @NotNull
+    public static File createTempDirectory( @NotNull String prefix, @Nullable String suffix ) throws IOException {
+        return createTempDirectory(prefix, suffix, null);
+    }
+
+    @NotNull
+    public static File createTempDirectory( @NotNull String prefix, @Nullable String suffix, @Nullable File directory ) throws IOException {
+        File tempFile = File.createTempFile(prefix, suffix, directory);
+        forceDelete(tempFile);
+        forceMkdir(tempFile);
+        return tempFile;
     }
 }

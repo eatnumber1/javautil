@@ -34,7 +34,7 @@ public class FileBackedHashSetTest extends AbstractFileBackedSetTest {
     @NotNull
     protected FileBackedCollection<String> newCollection2() throws Throwable {
         createDirectory();
-        set = new FileBackedHashSet<String>(tempFile, true, new CompressedPersistenceProvider<String>(new SerializablePersistenceProvider<String>(), new ZLIBCompressionProvider()));
+        set = new FileBackedMappedHashSet<String>(tempFile, new CompressedPersistenceProvider<String>(new SerializablePersistenceProvider<String>(), new ZLIBCompressionProvider()));
         return set;
     }
 

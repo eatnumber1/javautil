@@ -14,27 +14,27 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.io;
+package com.eatnumber1.util.collections.persistent;
 
+import com.eatnumber1.util.collections.persistent.provider.PersistenceProvider;
+import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.channels.WritableByteChannel;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 14, 2009
  */
-public class IOUtils extends org.apache.commons.io.IOUtils {
-    protected IOUtils() {
+public class FileBackedMappedHashMap<K, V> extends FileBackedHashMap<K, V> {
+    public FileBackedMappedHashMap() throws IOException {
     }
 
-    public static void write( @NotNull WritableByteChannel channel, @NotNull ByteBuffer src, int expected ) throws IOException {
-        if( channel.write(src) != expected ) throw new IOException("Did not write expected amount of data");
+    public FileBackedMappedHashMap( @NotNull File directory, @NotNull PersistenceProvider<Entry<K, V>> persistenceProvider ) throws IOException {
+        super(directory, persistenceProvider);
     }
 
-    public static void read( @NotNull ReadableByteChannel channel, @NotNull ByteBuffer dst, int expected ) throws IOException {
-        if( channel.read(dst) != expected ) throw new IOException("Did not read expected amount of data");
+    @Override
+    protected FileBackedHashSet<Entry<K, V>> newEntrySet( @NotNull File directory, @NotNull PersistenceProvider<Entry<K, V>> persistenceProvider ) throws IOException {
+        return new FileBackedMappedHashSet<Entry<K, V>>(directory, persistenceProvider);
     }
 }

@@ -53,6 +53,6 @@ public abstract class LazyContainer<T> extends SimpleContainer<T> {
         }
     }
 
-    @NotNull
+    @Nullable
     protected abstract T getInternal();
 }

@@ -14,15 +14,16 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.collections.persistent;
+package com.eatnumber1.util.collections.persistent.numbers;
 
+import com.eatnumber1.util.numbers.MutableNumber;
 import java.io.Closeable;
 import java.io.Flushable;
-import java.util.Collection;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 14, 2009
  */
-public interface PersistentCollection<T> extends Collection<T>, Closeable, Flushable {
+public interface FileBackedNumber extends MutableNumber, Flushable, Closeable {
+    public boolean isMapped();
 }

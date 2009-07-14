@@ -14,15 +14,33 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.collections.persistent;
+package com.eatnumber1.util.numbers;
 
-import java.io.Closeable;
-import java.io.Flushable;
-import java.util.Collection;
+import com.eatnumber1.util.annotations.Mutable;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 14, 2009
  */
-public interface PersistentCollection<T> extends Collection<T>, Closeable, Flushable {
+@Mutable
+public abstract class AbstractMutableNumber extends AbstractNumber implements MutableNumber {
+    public void byteValue( byte value ) {
+        longValue(value);
+    }
+
+    public void doubleValue( double value ) {
+        longValue((long) value);
+    }
+
+    public void floatValue( float value ) {
+        longValue((long) value);
+    }
+
+    public void shortValue( short value ) {
+        longValue(value);
+    }
+
+    public void intValue( int value ) {
+        longValue(value);
+    }
 }

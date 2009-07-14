@@ -14,15 +14,11 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.collections.persistent;
-
-import java.io.Closeable;
-import java.io.Flushable;
-import java.util.Collection;
+package com.eatnumber1.util.collections.persistent.numbers;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 14, 2009
  */
-public interface PersistentCollection<T> extends Collection<T>, Closeable, Flushable {
+public interface FileBackedInteger extends FileBackedNumber {
 }

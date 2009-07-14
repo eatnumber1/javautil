@@ -19,12 +19,14 @@ package com.eatnumber1.util.collections.concurrent.iterators;
 import java.util.ListIterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedListIterator<T, D extends ListIterator<T>> extends SynchronizedIterator<T, D> implements ListIterator<T> {
     public SynchronizedListIterator( @NotNull D delegate, @NotNull Lock lock ) {
         super(delegate, lock);

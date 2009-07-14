@@ -22,12 +22,14 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedMapFacade<K, V, D extends Map<K, V>> extends SynchronizedReadWriteFacade<D> implements SynchronizedMap<K, V, D> {
     public SynchronizedMapFacade( @NotNull D delegate, @NotNull Lock lock ) {
         super(delegate, lock);

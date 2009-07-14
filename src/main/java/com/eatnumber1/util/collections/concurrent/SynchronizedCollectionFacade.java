@@ -22,12 +22,14 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedCollectionFacade<T, D extends Collection<T>> extends SynchronizedReadWriteFacade<D> implements SynchronizedCollection<T, D> {
     public SynchronizedCollectionFacade( D delegate, @NotNull Lock lock ) {
         super(delegate, lock);

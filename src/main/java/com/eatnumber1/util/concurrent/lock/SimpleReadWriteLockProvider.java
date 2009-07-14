@@ -19,12 +19,14 @@ package com.eatnumber1.util.concurrent.lock;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import net.jcip.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@NotThreadSafe
 public class SimpleReadWriteLockProvider extends SimpleLockProvider implements ReadWriteLockProvider {
     @NotNull
     private ReadWriteLock lock;

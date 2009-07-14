@@ -20,10 +20,12 @@ import com.eatnumber1.util.concurrent.lock.ReadWriteLockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.util.Map;
 import java.util.concurrent.ConcurrentMap;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public interface SynchronizedMap<K, V, D extends Map<K, V>> extends ConcurrentMap<K, V>, ReadWriteLockProvider, Facade<D> {
 }

@@ -17,10 +17,12 @@
 package com.eatnumber1.util.collections.concurrent;
 
 import java.util.Queue;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public interface SynchronizedQueue<T, D extends Queue<T>> extends SynchronizedCollection<T, D>, Queue<T> {
 }

@@ -19,12 +19,14 @@ package com.eatnumber1.util.collections.concurrent;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedQueueFacade<T, D extends Queue<T>> extends SynchronizedCollectionFacade<T, D> implements SynchronizedQueue<T, D> {
     public SynchronizedQueueFacade( D delegate, @NotNull Lock lock ) {
         super(delegate, lock);

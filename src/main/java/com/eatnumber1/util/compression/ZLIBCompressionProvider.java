@@ -21,12 +21,14 @@ import java.util.zip.Deflater;
 import java.util.zip.DeflaterInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
+import net.jcip.annotations.NotThreadSafe;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@NotThreadSafe
 public class ZLIBCompressionProvider extends AbstractCompressionProvider {
     @Nullable
     private Deflater deflater;

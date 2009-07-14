@@ -20,12 +20,14 @@ import com.eatnumber1.util.concurrent.facade.SynchronizedReadWriteFacade;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedIterator<T, D extends Iterator<T>> extends SynchronizedReadWriteFacade<D> implements Iterator<T> {
     public SynchronizedIterator( @NotNull D delegate, @NotNull Lock lock ) {
         super(delegate, lock);

@@ -18,12 +18,14 @@ package com.eatnumber1.util.concurrent.lock;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedReadWriteLockProvider extends SimpleReadWriteLockProvider {
     protected SynchronizedReadWriteLockProvider( @NotNull Lock lock ) {
         super(lock);

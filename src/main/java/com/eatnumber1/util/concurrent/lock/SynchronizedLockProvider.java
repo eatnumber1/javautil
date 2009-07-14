@@ -17,12 +17,14 @@
 package com.eatnumber1.util.concurrent.lock;
 
 import java.util.concurrent.locks.Lock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedLockProvider extends SimpleLockProvider {
     protected SynchronizedLockProvider( @NotNull Lock lock ) {
         super(lock);

@@ -21,12 +21,14 @@ import java.util.Deque;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedDequeFacade<T, D extends Deque<T>> extends SynchronizedQueueFacade<T, D> implements SynchronizedDeque<T, D> {
     public SynchronizedDequeFacade( D delegate, @NotNull Lock lock ) {
         super(delegate, lock);

@@ -21,12 +21,14 @@ import com.eatnumber1.util.container.ContainerAction;
 import com.eatnumber1.util.container.ReadWriteContainer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedReadWriteContainer<D> extends SynchronizedReadWriteFacade<D> implements ReadWriteContainer<D> {
     public SynchronizedReadWriteContainer( @NotNull D delegate ) {
         super(delegate);

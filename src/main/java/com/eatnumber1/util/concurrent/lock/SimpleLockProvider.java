@@ -18,12 +18,14 @@ package com.eatnumber1.util.concurrent.lock;
 
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import net.jcip.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@NotThreadSafe
 public class SimpleLockProvider implements LockProvider {
     @NotNull
     private Lock lock;

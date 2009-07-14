@@ -20,12 +20,14 @@ import com.eatnumber1.util.concurrent.lock.SynchronizedReadWriteLockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedReadWriteFacade<T> extends SynchronizedReadWriteLockProvider implements Facade<T> {
     private T delegate;
 

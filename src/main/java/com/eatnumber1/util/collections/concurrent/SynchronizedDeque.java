@@ -17,10 +17,12 @@
 package com.eatnumber1.util.collections.concurrent;
 
 import java.util.Deque;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public interface SynchronizedDeque<T, D extends Deque<T>> extends SynchronizedQueue<T, D>, Deque<T> {
 }

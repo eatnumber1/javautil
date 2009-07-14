@@ -17,10 +17,12 @@
 package com.eatnumber1.util.collections.concurrent;
 
 import java.util.Set;
+import net.jcip.annotations.ThreadSafe;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public interface SynchronizedSet<T, D extends Set<T>> extends SynchronizedCollection<T, D>, Set<T> {
 }

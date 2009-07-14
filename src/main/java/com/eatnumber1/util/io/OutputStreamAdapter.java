@@ -21,12 +21,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class OutputStreamAdapter extends OutputStream {
     @NotNull
     private BlockingDeque<Integer> data = new LinkedBlockingDeque<Integer>();

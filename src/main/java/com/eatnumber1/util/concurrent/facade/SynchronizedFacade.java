@@ -19,6 +19,7 @@ package com.eatnumber1.util.concurrent.facade;
 import com.eatnumber1.util.concurrent.lock.SimpleLockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.util.concurrent.locks.Lock;
+import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +27,7 @@ import org.jetbrains.annotations.Nullable;
  * @author Russell Harmon
  * @since Jul 13, 2009
  */
+@ThreadSafe
 public class SynchronizedFacade<T> extends SimpleLockProvider implements Facade<T> {
     private T delegate;
 

@@ -28,6 +28,7 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
 import java.util.AbstractList;
 import java.util.RandomAccess;
+import net.jcip.annotations.NotThreadSafe;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,6 +37,7 @@ import org.jetbrains.annotations.Nullable;
  * @since Jul 13, 2009
  */
 // TODO: Optionally cache the list
+@NotThreadSafe
 public class FileBackedArrayList<T> extends AbstractList<T> implements FileBackedPersistentList<T>, RandomAccess {
     @NotNull
     private static final String LIST_FILENAME = "list";

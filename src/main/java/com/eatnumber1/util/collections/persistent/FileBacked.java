@@ -14,12 +14,15 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.container;
+package com.eatnumber1.util.collections.persistent;
+
+import java.io.Closeable;
+import java.io.Flushable;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 14, 2009
  */
-public interface ContainerAction<T, V> {
-    V doAction( T param ) throws ContainerException;
+public interface FileBacked extends Closeable, Flushable {
+    public boolean isMapped();
 }

@@ -14,13 +14,22 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.collections.persistent;
+package com.eatnumber1.util.io;
 
-import java.util.List;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.ReadableByteChannel;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 14, 2009
  */
-public interface FileBackedPersistentList<T> extends FileBackedPersistentCollection<T>, List<T> {
+public class IOUtils {
+    private IOUtils() {
+    }
+
+    public static void read( @NotNull ReadableByteChannel channel, @NotNull ByteBuffer dst, int expected ) throws IOException {
+        if( channel.read(dst) != expected ) throw new IOException("Did not read expected amount of data");
+    }
 }

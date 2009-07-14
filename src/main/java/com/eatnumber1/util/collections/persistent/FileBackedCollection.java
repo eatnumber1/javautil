@@ -14,12 +14,11 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.container;
+package com.eatnumber1.util.collections.persistent;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
-public interface ContainerAction<T, V> {
-    V doAction( T param ) throws ContainerException;
+public interface FileBackedCollection<T> extends PersistentCollection<T>, FileBacked {
 }

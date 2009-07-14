@@ -38,7 +38,7 @@ import org.jetbrains.annotations.Nullable;
  */
 // TODO: Optionally cache the list
 @NotThreadSafe
-public class FileBackedArrayList<T> extends AbstractList<T> implements FileBackedPersistentList<T>, RandomAccess {
+public class FileBackedArrayList<T> extends AbstractList<T> implements FileBackedList<T>, RandomAccess {
     @NotNull
     private static final String LIST_FILENAME = "list";
 

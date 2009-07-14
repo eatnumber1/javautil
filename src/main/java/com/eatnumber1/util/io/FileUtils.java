@@ -1,4 +1,4 @@
-package com.eatnumber1.util;/*
+package com.eatnumber1.util.io;/*
  * Copyright 2007 Russell Harmon
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,6 +16,8 @@ package com.eatnumber1.util;/*
 
 
 import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -75,5 +77,30 @@ public class FileUtils {
         if( file.exists() & !file.delete() ) {
             log.warn("Unable to delete file " + file);
         }
+    }
+
+    public static boolean isEmpty( @NotNull File file ) {
+        if( !file.isDirectory() ) throw new IllegalArgumentException("File is not a directory.");
+        return file.list().length == 0;
+    }
+
+    public static void forceMkdir( @NotNull File file ) throws IOException {
+        if( !file.exists() && !file.mkdir() ) {
+            throw new IOException("Unable to create directory.");
+        }
+    }
+
+    public static void forceCreateNewFile( @NotNull File file ) throws IOException {
+        if( !file.exists() && !file.createNewFile() ) {
+            throw new IOException("Unable to create file.");
+        }
+    }
+
+    public static boolean contains( @NotNull File directory, @NotNull String fileName ) {
+        return Arrays.asList(directory.list()).contains(fileName);
+    }
+
+    public static boolean contains( @NotNull File directory, @NotNull File file ) {
+        return Arrays.asList(directory.listFiles()).contains(file);
     }
 }

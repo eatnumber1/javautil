@@ -30,4 +30,9 @@ public class ThreadUtils {
     public static <T> Callable<T> caughtCallable( @NotNull Callable<T> callable ) {
         return new ExceptionReportingCallable<T>(callable);
     }
+
+    @NotNull
+    public static <T> Runnable runnable( @NotNull Callable<T> callable ) {
+        return new ThreadAdapter<T>(callable);
+    }
 }

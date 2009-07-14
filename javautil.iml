@@ -22,17 +22,10 @@
     <orderEntry type="library" name="Maven: junit:junit:4.6" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-io:commons-io:1.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: com.intellij:annotations:7.0.3" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.intellij:javac2:7.0.3" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm-commons:3.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm-tree:3.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: asm:asm:3.1" level="project" />
-    <orderEntry type="library" exported="" name="Maven: jdom:jdom:1.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.ant:ant:1.7.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: org.apache.ant:ant-launcher:1.7.0" level="project" />
-    <orderEntry type="library" exported="" name="Maven: com.jgoodies:forms:1.1-preview" level="project" />
     <orderEntry type="library" exported="" name="Maven: log4j:log4j:1.2.9" level="project" />
     <orderEntry type="library" exported="" name="Maven: commons-lang:commons-lang:2.4" level="project" />
     <orderEntry type="library" exported="" name="Maven: cglib:cglib:2.2" level="project" />
+    <orderEntry type="library" exported="" name="Maven: asm:asm:3.1" level="project" />
   </component>
 </module>
 

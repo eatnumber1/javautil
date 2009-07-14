@@ -52,7 +52,7 @@ public class FileBackedArrayListTest {
 
     private List<String> strings;
 
-    public FileBackedArrayListTest() {
+    static {
         BasicConfigurator.configure();
     }
 

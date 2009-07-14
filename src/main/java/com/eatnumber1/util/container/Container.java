@@ -16,12 +16,13 @@
 
 package com.eatnumber1.util.container;
 
+import com.eatnumber1.util.facade.Facade;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
-public interface Container<V> {
+public interface Container<V> extends Facade<V> {
     <T> T doAction( @NotNull ContainerAction<V, T> action ) throws ContainerException;
 }

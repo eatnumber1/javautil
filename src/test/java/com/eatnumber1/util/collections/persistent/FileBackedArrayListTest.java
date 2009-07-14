@@ -29,8 +29,8 @@ import java.util.ListIterator;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.commons.lang.math.RandomUtils;
-import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -41,7 +41,7 @@ import org.junit.Test;
  * @since Jul 13, 2007
  */
 public class FileBackedArrayListTest {
-    private static Logger log = Logger.getLogger(FileBackedArrayListTest.class);
+    private static Log log = LogFactory.getLog(FileBackedArrayListTest.class);
 
     private static final int ELEMENT_COUNT = 500;
     private static final boolean RANDOM_STRINGS = true;
@@ -51,10 +51,6 @@ public class FileBackedArrayListTest {
     private FileBackedArrayList<String> list;
 
     private List<String> strings;
-
-    static {
-        BasicConfigurator.configure();
-    }
 
     @Before
     public void setUp() throws IOException {

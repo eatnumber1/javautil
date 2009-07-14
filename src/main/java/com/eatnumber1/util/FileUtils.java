@@ -22,7 +22,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -31,7 +32,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class FileUtils {
     @NotNull
-    private static Logger log = Logger.getLogger(FileUtils.class);
+    private static Log log = LogFactory.getLog(FileUtils.class);
 
     @NotNull
     private static final Map<File, List<File>> fileElementCache = Collections.synchronizedMap(new WeakHashMap<File, List<File>>());

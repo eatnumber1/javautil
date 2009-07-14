@@ -21,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public class UnmodifiableListIterator<T, D extends ListIterator<T>> extends UnmodifiableIterator<T, D> implements ListIterator<T> {
     public UnmodifiableListIterator( @NotNull D delegate ) {

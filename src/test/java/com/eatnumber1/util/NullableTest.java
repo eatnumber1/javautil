@@ -21,7 +21,7 @@ import org.junit.Test;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public class NullableTest {
     private void notNull( @NotNull Object obj ) {}

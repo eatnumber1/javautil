@@ -25,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 @ThreadSafe
 public class SynchronizedIterator<T, D extends Iterator<T>> extends SynchronizedReadWriteFacade<D> implements Iterator<T> {

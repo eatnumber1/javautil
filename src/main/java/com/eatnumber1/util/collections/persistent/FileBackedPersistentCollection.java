@@ -21,7 +21,7 @@ import java.io.Flushable;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public interface FileBackedPersistentCollection<T> extends PersistentCollection<T>, Closeable, Flushable {
 }

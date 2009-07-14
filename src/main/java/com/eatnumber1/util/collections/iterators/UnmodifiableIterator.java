@@ -22,7 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public class UnmodifiableIterator<T, D extends Iterator<T>> extends SimpleFacade<D> implements Iterator<T> {
     public UnmodifiableIterator( @NotNull D delegate ) {

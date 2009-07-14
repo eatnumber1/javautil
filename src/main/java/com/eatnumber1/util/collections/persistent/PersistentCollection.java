@@ -20,7 +20,7 @@ import java.util.Collection;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public interface PersistentCollection<T> extends Collection<T> {
 }

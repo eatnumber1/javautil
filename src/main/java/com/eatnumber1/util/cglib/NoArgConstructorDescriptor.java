@@ -21,7 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public class NoArgConstructorDescriptor<T> implements ConstructorDescriptor<T> {
     @NotNull

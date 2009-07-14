@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public interface EqualityComparator<T> {
     boolean equals( @NotNull T o1, @NotNull T o2 );

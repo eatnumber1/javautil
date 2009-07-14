@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public interface Container<V> {
     <T, E extends Throwable> T doAction( @NotNull ContainerAction<V, T, E> action ) throws E;

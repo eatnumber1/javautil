@@ -18,7 +18,7 @@ package com.eatnumber1.util.facade;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public interface Facade<T> {
     T getDelegate();

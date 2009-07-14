@@ -40,7 +40,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public class Collections {
     public static <E> boolean contains( @NotNull Collection<E> c1, @NotNull E o, @NotNull Comparator<E> comparator ) {

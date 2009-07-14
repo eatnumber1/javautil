@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 public class SimpleReadWriteContainer<V> extends SimpleContainer<V> implements ReadWriteContainer<V> {
     public SimpleReadWriteContainer( V delegate ) {

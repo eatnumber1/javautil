@@ -24,7 +24,7 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2009
+ * @since Jul 13, 2007
  */
 @ThreadSafe
 public class SynchronizedQueueFacade<T, D extends Queue<T>> extends SynchronizedCollectionFacade<T, D> implements SynchronizedQueue<T, D> {

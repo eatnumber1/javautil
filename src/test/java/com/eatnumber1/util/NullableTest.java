@@ -31,7 +31,7 @@ public class NullableTest {
     public void nullable() {
         try {
             notNull(null);
-            Assert.fail();
+            Assert.fail("@NotNull was not enforced.");
         } catch( IllegalArgumentException e ) {
             // Do nothing
         }

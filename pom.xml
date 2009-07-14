@@ -4,7 +4,7 @@
     <groupId>com.eatnumber1</groupId>
     <artifactId>javautil</artifactId>
     <packaging>jar</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1-SNAPSHOT</version>
     <name>javautil</name>
     <url>http://maven.apache.org</url>
     <dependencies>
@@ -75,4 +75,28 @@
             </plugin>
         </plugins>
     </build>
+    <scm>
+        <connection>scm:git://github.com/eatnumber1/javautil.git</connection>
+        <developerConnection>scm:git@github.com:eatnumber1/javautil.git</developerConnection>
+        <url>http://github.com/eatnumber1/javautil/tree/master</url>
+    </scm>
+    <!--<reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <configuration>
+                    <quiet>true</quiet>
+                    <show>package</show>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+    <distributionManagement>
+        <repository>
+            <id>javautil</id>
+            <name>Java Utilities</name>
+            <url>http://java.eatnumber1.com/util</url>
+        </repository>
+    </distributionManagement>-->
 </project>

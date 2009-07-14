@@ -79,6 +79,8 @@
                 <configuration>
                     <ideaVersion>8.1.3</ideaVersion>
                     <jdkLevel>6.0</jdkLevel>
+                    <downloadJavadocs>true</downloadJavadocs>
+                    <downloadSources>true</downloadSources>
                 </configuration>
             </plugin>
         </plugins>

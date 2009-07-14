@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module relativePaths="false" type="JAVA_MODULE" version="4">
+  <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_6" inherit-compiler-output="false">
+    <output url="file://$MODULE_DIR$/target/classes" />
+    <output-test url="file://$MODULE_DIR$/target/test-classes" />
+    <content url="file://C:/Documents and Settings/rharmon/My Documents/javautil">
+      <sourceFolder url="file://C:/Documents and Settings/rharmon/My Documents/javautil/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://C:/Documents and Settings/rharmon/My Documents/javautil/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://C:/Documents and Settings/rharmon/My Documents/javautil/target" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar://$MAVEN_REPOSITORY$/junit/junit/3.8.1/junit-3.8.1.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="library" name="Maven: junit:junit:4.6" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-io:commons-io:1.4" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.intellij:annotations:7.0.3" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.intellij:javac2:7.0.3" level="project" />
+    <orderEntry type="library" exported="" name="Maven: asm:asm-commons:3.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: asm:asm-tree:3.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: asm:asm:3.1" level="project" />
+    <orderEntry type="library" exported="" name="Maven: jdom:jdom:1.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.apache.ant:ant:1.7.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: org.apache.ant:ant-launcher:1.7.0" level="project" />
+    <orderEntry type="library" exported="" name="Maven: com.jgoodies:forms:1.1-preview" level="project" />
+    <orderEntry type="library" exported="" name="Maven: log4j:log4j:1.2.9" level="project" />
+    <orderEntry type="library" exported="" name="Maven: commons-lang:commons-lang:2.4" level="project" />
+    <orderEntry type="library" exported="" name="Maven: cglib:cglib:2.2" level="project" />
+  </component>
+</module>
+

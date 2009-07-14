@@ -32,10 +32,12 @@ public class SimpleFacade<T> implements Facade<T> {
         this.delegate = delegate;
     }
 
+    @Override
     public T getDelegate() {
         return delegate;
     }
 
+    @Override
     public void setDelegate( T delegate ) {
         this.delegate = delegate;
     }

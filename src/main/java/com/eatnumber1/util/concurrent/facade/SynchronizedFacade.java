@@ -100,10 +100,12 @@ public class SynchronizedFacade<T> extends SimpleLockProvider implements Facade<
         }
     }
 
+    @Override
     public void setDelegate( T delegate ) {
         this.delegate = delegate;
     }
 
+    @Override
     public T getDelegate() {
         return delegate;
     }

@@ -89,10 +89,12 @@ public class SynchronizedReadWriteFacade<T> extends SynchronizedReadWriteLockPro
         }
     }
 
+    @Override
     public void setDelegate( T delegate ) {
         this.delegate = delegate;
     }
 
+    @Override
     public T getDelegate() {
         return delegate;
     }

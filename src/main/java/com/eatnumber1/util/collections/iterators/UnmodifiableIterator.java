@@ -29,14 +29,17 @@ public class UnmodifiableIterator<T, D extends Iterator<T>> extends SimpleFacade
         super(delegate);
     }
 
+    @Override
     public boolean hasNext() {
         return getDelegate().hasNext();
     }
 
+    @Override
     public T next() {
         return getDelegate().next();
     }
 
+    @Override
     public void remove() {
         throw new UnsupportedOperationException();
     }

@@ -41,6 +41,7 @@ public class SynchronizedIterator<T, D extends Iterator<T>> extends Synchronized
         super(delegate, lock);
     }
 
+    @Override
     public boolean hasNext() {
         Lock readLock = readLock();
         readLock.lock();
@@ -51,6 +52,7 @@ public class SynchronizedIterator<T, D extends Iterator<T>> extends Synchronized
         }
     }
 
+    @Override
     public T next() {
         Lock readLock = readLock();
         readLock.lock();
@@ -61,6 +63,7 @@ public class SynchronizedIterator<T, D extends Iterator<T>> extends Synchronized
         }
     }
 
+    @Override
     public void remove() {
         Lock writeLock = writeLock();
         writeLock.lock();

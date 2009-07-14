@@ -40,6 +40,7 @@ public class SynchronizedListIterator<T, D extends ListIterator<T>> extends Sync
         super(delegate, lock);
     }
 
+    @Override
     public boolean hasPrevious() {
         Lock readLock = readLock();
         readLock.lock();
@@ -50,6 +51,7 @@ public class SynchronizedListIterator<T, D extends ListIterator<T>> extends Sync
         }
     }
 
+    @Override
     public T previous() {
         Lock readLock = readLock();
         readLock.lock();
@@ -60,6 +62,7 @@ public class SynchronizedListIterator<T, D extends ListIterator<T>> extends Sync
         }
     }
 
+    @Override
     public int nextIndex() {
         Lock readLock = readLock();
         readLock.lock();
@@ -70,6 +73,7 @@ public class SynchronizedListIterator<T, D extends ListIterator<T>> extends Sync
         }
     }
 
+    @Override
     public int previousIndex() {
         Lock readLock = readLock();
         readLock.lock();
@@ -80,6 +84,7 @@ public class SynchronizedListIterator<T, D extends ListIterator<T>> extends Sync
         }
     }
 
+    @Override
     public void set( T o ) {
         Lock writeLock = writeLock();
         writeLock.lock();
@@ -90,6 +95,7 @@ public class SynchronizedListIterator<T, D extends ListIterator<T>> extends Sync
         }
     }
 
+    @Override
     public void add( T o ) {
         Lock writeLock = writeLock();
         writeLock.lock();

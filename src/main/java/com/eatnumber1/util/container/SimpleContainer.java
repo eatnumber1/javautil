@@ -24,6 +24,9 @@ import org.jetbrains.annotations.NotNull;
  * @since Jul 13, 2007
  */
 public class SimpleContainer<V> extends SimpleFacade<V> implements Container<V> {
+    public SimpleContainer() {
+    }
+
     public SimpleContainer( V delegate ) {
         super(delegate);
     }

@@ -37,6 +37,7 @@ public class CompressedPersistenceProvider<T> extends SimpleFacade<PersistencePr
     }
 
     @Override
+    @Nullable
     public byte[] toBytes( @Nullable T object ) throws PersistenceException {
         try {
             return compressionProvider.compress(getDelegate().toBytes(object));
@@ -46,6 +47,7 @@ public class CompressedPersistenceProvider<T> extends SimpleFacade<PersistencePr
     }
 
     @Override
+    @Nullable
     public T fromBytes( @Nullable byte[] bytes ) throws PersistenceException {
         try {
             return getDelegate().fromBytes(compressionProvider.decompress(bytes));

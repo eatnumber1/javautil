@@ -28,26 +28,32 @@ public class UnmodifiableListIterator<T, D extends ListIterator<T>> extends Unmo
         super(delegate);
     }
 
+    @Override
     public boolean hasPrevious() {
         return getDelegate().hasPrevious();
     }
 
+    @Override
     public T previous() {
         return getDelegate().previous();
     }
 
+    @Override
     public int nextIndex() {
         return getDelegate().nextIndex();
     }
 
+    @Override
     public int previousIndex() {
         return getDelegate().previousIndex();
     }
 
+    @Override
     public void set( T o ) {
         throw new UnsupportedOperationException();
     }
 
+    @Override
     public void add( T o ) {
         throw new UnsupportedOperationException();
     }

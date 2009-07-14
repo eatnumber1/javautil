@@ -41,6 +41,7 @@ public class SynchronizedMethodInterceptor<T> extends SynchronizedLockProvider i
         this.delegate = delegate;
     }
 
+    @Override
     public Object intercept( Object o, Method method, Object[] objects, MethodProxy methodProxy ) throws Throwable {
         Lock lock = getLock();
         lock.lock();

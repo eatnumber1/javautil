@@ -16,12 +16,16 @@
 
 package com.eatnumber1.util.container;
 
-import org.jetbrains.annotations.NotNull;
-
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 13, 2009
  */
-public interface Container<V> {
-    <T> T doAction( @NotNull ContainerAction<V, T> action ) throws ContainerException;
+public class ContainerException extends Exception {
+    public ContainerException( String message, Throwable cause ) {
+        super(message, cause);
+    }
+
+    public ContainerException( Throwable cause ) {
+        super(cause);
+    }
 }

@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.collections.concurrent.iterators;
 
+import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.facade.SynchronizedReadWriteFacade;
 import java.util.Iterator;
 import java.util.concurrent.locks.Lock;

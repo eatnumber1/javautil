@@ -16,11 +16,12 @@
 
 package com.eatnumber1.util.concurrent.container;
 
-import com.eatnumber1.util.concurrent.facade.SynchronizedReadWriteFacade;
+import com.eatnumber1.util.compat.Override;
+import com.eatnumber1.util.concurrent.facade.SynchronizedFacade;
 import com.eatnumber1.util.container.Container;
 import com.eatnumber1.util.container.ContainerAction;
+import com.eatnumber1.util.container.ContainerException;
 import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReadWriteLock;
 import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,41 +30,30 @@ import org.jetbrains.annotations.NotNull;
  * @since Jul 13, 2007
  */
 @ThreadSafe
-public class SynchronizedContainer<V> extends SynchronizedReadWriteFacade<V> implements Container<V> {
+public class SynchronizedContainer<V> extends SynchronizedFacade<V> implements Container<V> {
     public SynchronizedContainer( V delegate ) {
         super(delegate);
-    }
-
-    public SynchronizedContainer( V delegate, @NotNull ReadWriteLock lock ) {
-        super(delegate, lock);
     }
 
     public SynchronizedContainer( V delegate, @NotNull Lock lock ) {
         super(delegate, lock);
     }
 
+    public SynchronizedContainer() {
+    }
+
     @Override
-    public <T, E extends Throwable> T doAction( @NotNull ContainerAction<V, T, E> action ) throws E {
+    public <T> T doAction( @NotNull ContainerAction<V, T> action ) throws ContainerException {
         Lock lock = getLock();
         lock.lock();
         try {
             return action.doAction(getDelegate());
         } catch( RuntimeException e ) {
             throw e;
+        } catch( ContainerException e ) {
+            throw e;
         } catch( Exception e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw new RuntimeException(e);
-            }
-        } catch( Error e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw e;
-            }
+            throw new ContainerException(e);
         } finally {
             lock.unlock();
         }

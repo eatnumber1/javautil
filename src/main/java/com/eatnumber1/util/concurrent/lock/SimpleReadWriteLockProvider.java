@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.concurrent.lock;
 
+import com.eatnumber1.util.compat.Override;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
@@ -55,29 +56,35 @@ public class SimpleReadWriteLockProvider extends SimpleLockProvider implements R
         this(new ReentrantReadWriteLock());
     }
 
+    @Override
     public Lock readLock() {
         return getReadLock();
     }
 
+    @Override
     public Lock writeLock() {
         return getWriteLock();
     }
 
     @NotNull
+    @Override
     public ReadWriteLock getReadWriteLock() {
         return lock;
     }
 
     @NotNull
+    @Override
     public Lock getReadLock() {
         return lock.readLock();
     }
 
     @NotNull
+    @Override
     public Lock getWriteLock() {
         return lock.writeLock();
     }
 
+    @Override
     public void setReadWriteLock( @NotNull ReadWriteLock lock ) {
         Lock writeLock = this.lock.writeLock();
         writeLock.lock();
@@ -92,10 +99,12 @@ public class SimpleReadWriteLockProvider extends SimpleLockProvider implements R
     @Override
     public void setLock( @NotNull final Lock lock ) {
         setReadWriteLock(new ReadWriteLock() {
+            @Override
             public Lock readLock() {
                 return lock;
             }
 
+            @Override
             public Lock writeLock() {
                 return lock;
             }

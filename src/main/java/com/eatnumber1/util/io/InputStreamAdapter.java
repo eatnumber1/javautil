@@ -16,11 +16,11 @@
 
 package com.eatnumber1.util.io;
 
+import com.eatnumber1.util.compat.BlockingDeque;
+import com.eatnumber1.util.compat.LinkedBlockingDeque;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
 import net.jcip.annotations.ThreadSafe;
 import org.jetbrains.annotations.NotNull;
 

@@ -16,8 +16,10 @@
 
 package com.eatnumber1.util.concurrent.container;
 
+import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.facade.SynchronizedReadWriteFacade;
 import com.eatnumber1.util.container.ContainerAction;
+import com.eatnumber1.util.container.ContainerException;
 import com.eatnumber1.util.container.ReadWriteContainer;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -42,82 +44,55 @@ public class SynchronizedReadWriteContainer<D> extends SynchronizedReadWriteFaca
         super(delegate, lock);
     }
 
+    public SynchronizedReadWriteContainer() {
+    }
+
     @Override
-    public <T, E extends Throwable> T doAction( @NotNull ContainerAction<D, T, E> action ) throws E {
+    public <T> T doAction( @NotNull ContainerAction<D, T> action ) throws ContainerException {
         Lock lock = getLock();
         lock.lock();
         try {
             return action.doAction(getDelegate());
         } catch( RuntimeException e ) {
             throw e;
-        } catch( Exception e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw new RuntimeException(e);
-            }
-        } catch( Error e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw e;
-            }
-        } finally {
-            lock.unlock();
-        }
-    }
-
-    @Override
-    public <T, E extends Throwable> T doReadAction( @NotNull ContainerAction<D, T, E> action ) throws E {
-        Lock lock = getWriteLock();
-        lock.lock();
-        try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
+        } catch( ContainerException e ) {
             throw e;
         } catch( Exception e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw new RuntimeException(e);
-            }
-        } catch( Error e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw e;
-            }
+            throw new ContainerException(e);
         } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public <T, E extends Throwable> T doWriteAction( @NotNull ContainerAction<D, T, E> action ) throws E {
+    public <T> T doReadAction( @NotNull ContainerAction<D, T> action ) throws ContainerException {
         Lock lock = getReadLock();
         lock.lock();
         try {
             return action.doAction(getDelegate());
         } catch( RuntimeException e ) {
             throw e;
+        } catch( ContainerException e ) {
+            throw e;
         } catch( Exception e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw new RuntimeException(e);
-            }
-        } catch( Error e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw e;
-            }
+            throw new ContainerException(e);
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    @Override
+    public <T> T doWriteAction( @NotNull ContainerAction<D, T> action ) throws ContainerException {
+        Lock lock = getWriteLock();
+        lock.lock();
+        try {
+            return action.doAction(getDelegate());
+        } catch( RuntimeException e ) {
+            throw e;
+        } catch( ContainerException e ) {
+            throw e;
+        } catch( Exception e ) {
+            throw new ContainerException(e);
         } finally {
             lock.unlock();
         }

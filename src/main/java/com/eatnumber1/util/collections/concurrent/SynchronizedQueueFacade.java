@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.collections.concurrent;
 
+import com.eatnumber1.util.compat.Override;
 import java.util.Queue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;

@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.cglib;
 
+import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.lock.LockProvider;
 import java.lang.reflect.Method;
 import java.util.ArrayList;

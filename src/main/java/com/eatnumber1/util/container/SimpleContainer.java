@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.container;
 
+import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.facade.SimpleFacade;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,25 +33,15 @@ public class SimpleContainer<V> extends SimpleFacade<V> implements Container<V> 
     }
 
     @Override
-    public <T, E extends Throwable> T doAction( @NotNull ContainerAction<V, T, E> action ) throws E {
+    public <T> T doAction( @NotNull ContainerAction<V, T> action ) throws ContainerException {
         try {
             return action.doAction(getDelegate());
         } catch( RuntimeException e ) {
             throw e;
+        } catch( ContainerException e ) {
+            throw e;
         } catch( Exception e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw new RuntimeException(e);
-            }
-        } catch( Error e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw e;
-            }
+            throw new ContainerException(e);
         }
     }
 }

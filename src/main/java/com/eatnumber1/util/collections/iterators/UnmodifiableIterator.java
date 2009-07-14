@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.collections.iterators;
 
+import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.facade.SimpleFacade;
 import java.util.Iterator;
 import org.jetbrains.annotations.NotNull;

@@ -13,15 +13,14 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
+package com.eatnumber1.util.compat;
 
-package com.eatnumber1.util.container;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.jetbrains.annotations.NotNull;
-
-/**
- * @author Russell Harmon
- * @since Jul 13, 2007
- */
-public interface Container<V> {
-    <T> T doAction( @NotNull ContainerAction<V, T> action ) throws ContainerException;
+@Target(ElementType.METHOD)
+@Retention(RetentionPolicy.SOURCE)
+public @interface Override {
 }

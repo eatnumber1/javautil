@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.container;
 
+import com.eatnumber1.util.compat.Override;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,49 +28,32 @@ public class SimpleReadWriteContainer<V> extends SimpleContainer<V> implements R
         super(delegate);
     }
 
+    public SimpleReadWriteContainer() {
+    }
+
     @Override
-    public <T, E extends Throwable> T doReadAction( @NotNull ContainerAction<V, T, E> action ) throws E {
+    public <T> T doReadAction( @NotNull ContainerAction<V, T> action ) throws ContainerException {
         try {
             return action.doAction(getDelegate());
         } catch( RuntimeException e ) {
             throw e;
+        } catch( ContainerException e ) {
+            throw e;
         } catch( Exception e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw new RuntimeException(e);
-            }
-        } catch( Error e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw e;
-            }
+            throw new ContainerException(e);
         }
     }
 
     @Override
-    public <T, E extends Throwable> T doWriteAction( @NotNull ContainerAction<V, T, E> action ) throws E {
+    public <T> T doWriteAction( @NotNull ContainerAction<V, T> action ) throws ContainerException {
         try {
             return action.doAction(getDelegate());
         } catch( RuntimeException e ) {
             throw e;
+        } catch( ContainerException e ) {
+            throw e;
         } catch( Exception e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw new RuntimeException(e);
-            }
-        } catch( Error e ) {
-            try {
-                //noinspection unchecked
-                throw (E) e;
-            } catch( ClassCastException e1 ) {
-                throw e;
-            }
+            throw new ContainerException(e);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.eatnumber1.util.observer;
 
 import com.eatnumber1.util.collections.concurrent.SynchronizedCollection;
+import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.executors.ExecutorServiceFactory;
 import com.eatnumber1.util.concurrent.executors.ManagedExecutorService;
 import java.util.Collection;

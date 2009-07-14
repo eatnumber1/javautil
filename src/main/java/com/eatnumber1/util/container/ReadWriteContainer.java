@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
  * @since Jul 13, 2007
  */
 public interface ReadWriteContainer<V> extends Container<V> {
-    <T, E extends Throwable> T doReadAction( @NotNull ContainerAction<V, T, E> action ) throws E;
+    <T> T doReadAction( @NotNull ContainerAction<V, T> action ) throws ContainerException;
 
-    <T, E extends Throwable> T doWriteAction( @NotNull ContainerAction<V, T, E> action ) throws E;
+    <T> T doWriteAction( @NotNull ContainerAction<V, T> action ) throws ContainerException;
 }

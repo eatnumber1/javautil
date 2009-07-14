@@ -1,5 +1,6 @@
 package com.eatnumber1.util.concurrent.executors;
 
+import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.ThreadAdapter;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Delayed;

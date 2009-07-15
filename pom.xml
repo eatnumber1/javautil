@@ -111,64 +111,6 @@
                     <show>package</show>
                 </configuration>
             </plugin>
-            <!--<plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>retrotranslator-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <phase>process-classes</phase>
-                        <goals>
-                            <goal>translate</goal>
-                        </goals>
-                        <configuration>
-                            <filesets>
-                                <fileset>
-                                    <directory>C:/Documents and Settings/rharmon/My Documents/javautil/target/classes</directory>
-                                    <includes>
-                                        <include>**/*.class</include>
-                                    </includes>
-                                </fileset>
-                            </filesets>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>-->
-            <!--<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-remote-resources-plugin</artifactId>
-                <version>1.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>bundle</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <resourceBundles>
-                        <resourceBundle>org.apache:apache-jar-resource-bundle:1.0</resourceBundle>
-                    </resourceBundles>
-                </configuration>
-            </plugin>-->
         </plugins>
     </build>
-    <!--<reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <configuration>
-                    <quiet>true</quiet>
-                    <show>package</show>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-    <distributionManagement>
-        <repository>
-            <id>javautil</id>
-            <name>Java Utilities</name>
-            <url>http://java.eatnumber1.com/util</url>
-        </repository>
-    </distributionManagement>-->
 </project>

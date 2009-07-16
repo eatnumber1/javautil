@@ -54,4 +54,9 @@ public class InputStreamAdapter extends InputStream {
             }
         };
     }
+
+    @Override
+    public int available() throws IOException {
+        return data.size();
+    }
 }

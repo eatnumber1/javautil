@@ -56,6 +56,11 @@ public class OutputStreamAdapter extends OutputStream {
                     throw new RuntimeException(e);
                 }
             }
+
+            @Override
+            public int available() throws IOException {
+                return data.size();
+            }
         };
     }
 }

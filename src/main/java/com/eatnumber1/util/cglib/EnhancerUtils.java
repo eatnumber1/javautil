@@ -18,6 +18,7 @@ package com.eatnumber1.util.cglib;
 
 import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.lock.LockProvider;
+import com.eatnumber1.util.facade.Facade;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import net.sf.cglib.proxy.CallbackFilter;
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
+import org.apache.commons.collections15.collection.CompositeCollection;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,13 +92,13 @@ public class EnhancerUtils {
 
     @NotNull
     public static <T, D extends T> T synchronize( @NotNull ConstructorDescriptor<T> descriptor, @NotNull D delegate, @NotNull Lock lock ) {
-        Enhancer enhancer = getEnhancer(descriptor.getType(), LockProvider.class);
+        Enhancer enhancer = getEnhancer(descriptor.getType(), LockProvider.class, Facade.class);
         enhancer.setCallbackFilter(new CallbackFilter() {
-            private Collection<Method> LOCK_PROVIDER_METHODS = Collections.unmodifiableCollection(Arrays.asList(LockProvider.class.getMethods()));
+            private Collection<Method> INTERCEPTED_METHODS = Collections.unmodifiableCollection(new CompositeCollection<Method>(Arrays.asList(LockProvider.class.getMethods()), Arrays.asList(Facade.class.getMethods())));
 
             @Override
             public int accept( Method method ) {
-                return LOCK_PROVIDER_METHODS.contains(method) ? 1 : 0;
+                return INTERCEPTED_METHODS.contains(method) ? 1 : 0;
             }
         });
         final SynchronizedMethodInterceptor interceptor = new SynchronizedMethodInterceptor<D>(delegate, lock);

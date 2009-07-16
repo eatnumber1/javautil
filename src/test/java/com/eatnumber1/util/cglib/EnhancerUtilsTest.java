@@ -17,6 +17,7 @@
 package com.eatnumber1.util.cglib;
 
 import com.eatnumber1.util.concurrent.lock.LockProvider;
+import com.eatnumber1.util.facade.Facade;
 import java.util.concurrent.locks.Lock;
 import org.junit.Assert;
 import org.junit.Test;
@@ -62,7 +63,29 @@ public class EnhancerUtilsTest {
     }
 
     @Test
-    public void synchronize() throws InterruptedException {
+    public void synchronizeIsLockProvider() {
+        IncrementableInteger str = EnhancerUtils.synchronize(new IncrementableInteger());
+        try {
+            //noinspection UnusedDeclaration
+            LockProvider provider = (LockProvider) str;
+        } catch( ClassCastException e ) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void synchronizeIsFacade() {
+        IncrementableInteger str = EnhancerUtils.synchronize(new IncrementableInteger());
+        try {
+            //noinspection UnusedDeclaration,unchecked
+            Facade<IncrementableInteger> provider = (Facade<IncrementableInteger>) str;
+        } catch( ClassCastException e ) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void synchronizeIsSynchronized() throws InterruptedException {
         final IncrementableInteger integer = EnhancerUtils.synchronize(new IncrementableInteger());
 
         Thread[] threads = {

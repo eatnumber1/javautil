@@ -61,6 +61,12 @@ public class SynchronizedMethodInterceptor<T> extends SynchronizedLockProvider i
 
     @Override
     public void setDelegate( @NotNull T delegate ) {
-        this.delegate = delegate;
+        Lock lock = getLock();
+        lock.lock();
+        try {
+            this.delegate = delegate;
+        } finally {
+            lock.unlock();
+        }
     }
 }

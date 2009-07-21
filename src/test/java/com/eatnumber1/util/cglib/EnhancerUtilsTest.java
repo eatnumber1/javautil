@@ -19,13 +19,14 @@ package com.eatnumber1.util.cglib;
 import com.eatnumber1.util.concurrent.lock.LockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.util.concurrent.locks.Lock;
-import junit.framework.TestCase;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
-public class EnhancerUtilsTest extends TestCase {
+public class EnhancerUtilsTest {
     private static final int ITERATIONS = 1000000;
 
     private static class Reference<T> {
@@ -61,26 +62,29 @@ public class EnhancerUtilsTest extends TestCase {
         }
     }
 
-    public void testSynchronizeIsLockProvider() {
+    @Test
+    public void synchronizeIsLockProvider() {
         IncrementableInteger str = EnhancerUtils.synchronize(new IncrementableInteger());
         try {
             //noinspection UnusedDeclaration
             LockProvider provider = (LockProvider) str;
         } catch( ClassCastException e ) {
-            fail();
+            Assert.fail();
         }
     }
 
+    @Test
     public void testSynchronizeIsFacade() {
         IncrementableInteger str = EnhancerUtils.synchronize(new IncrementableInteger());
         try {
             //noinspection UnusedDeclaration,unchecked
             Facade<IncrementableInteger> provider = (Facade<IncrementableInteger>) str;
         } catch( ClassCastException e ) {
-            fail();
+            Assert.fail();
         }
     }
 
+    @Test
     public void testSynchronizeIsSynchronized() throws InterruptedException {
         final IncrementableInteger integer = EnhancerUtils.synchronize(new IncrementableInteger());
 
@@ -127,6 +131,6 @@ public class EnhancerUtilsTest extends TestCase {
 
         // Prevents ambiguous method call.
         //noinspection RedundantCast
-        assertEquals(threads.length * ITERATIONS, (long) integer.getNum().getReferent());
+        Assert.assertEquals(threads.length * ITERATIONS, (long) integer.getNum().getReferent());
     }
 }

@@ -14,35 +14,19 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.collections;
+package com.eatnumber1.util.concurrent.lock;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Arrays;
+import java.util.concurrent.locks.Lock;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
-import org.junit.Before;
 
 /**
  * @author Russell Harmon
- * @since Jul 14, 2009
+ * @since Jul 21, 2009
  */
-public abstract class AbstractSetTest extends AbstractCollectionTest {
+public abstract class AbstractCompositeLockFactory implements CompositeLockFactory {
     @NotNull
-    private Set<String> strings;
-
-    @Before
-    public void initStringSet() {
-        strings = new HashSet<String>(super.strings);
-    }
-
-    @Override
-    protected void assertFull() {
-        Assert.assertTrue(collection.size() == strings.size());
-        int count = 0;
-        for( String s : collection ) {
-            Assert.assertTrue(strings.contains(s));
-            count++;
-        }
-        Assert.assertEquals(strings.size(), count);
+    public CompositeLock getLock( @NotNull Lock... locks ) {
+        return getLock(Arrays.asList(locks));
     }
 }

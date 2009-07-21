@@ -22,6 +22,7 @@ import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -29,8 +30,10 @@ import org.jetbrains.annotations.Nullable;
  * @since Jul 13, 2007
  */
 public class XMLPersistenceProvider<T> implements PersistenceProvider<T> {
+    @NotNull
     @Override
     public byte[] toBytes( @Nullable T object ) throws PersistenceException {
+        if( object == null ) return new byte[0];
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         XMLEncoder encoder = new XMLEncoder(out);
         encoder.writeObject(object);
@@ -38,8 +41,10 @@ public class XMLPersistenceProvider<T> implements PersistenceProvider<T> {
         return out.toByteArray();
     }
 
+    @Nullable
     @Override
-    public T fromBytes( @Nullable byte[] bytes ) throws PersistenceException {
+    public T fromBytes( @NotNull byte[] bytes ) throws PersistenceException {
+        if( bytes.length == 0 ) return null;
         XMLDecoder decoder = new XMLDecoder(new ByteArrayInputStream(bytes));
         //noinspection unchecked
         T object = (T) decoder.readObject();

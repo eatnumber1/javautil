@@ -19,14 +19,13 @@ package com.eatnumber1.util.cglib;
 import com.eatnumber1.util.concurrent.lock.LockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.util.concurrent.locks.Lock;
-import org.junit.Assert;
-import org.junit.Test;
+import junit.framework.TestCase;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
-public class EnhancerUtilsTest {
+public class EnhancerUtilsTest extends TestCase {
     private static final int ITERATIONS = 1000000;
 
     private static class Reference<T> {
@@ -62,30 +61,27 @@ public class EnhancerUtilsTest {
         }
     }
 
-    @Test
-    public void synchronizeIsLockProvider() {
+    public void testSynchronizeIsLockProvider() {
         IncrementableInteger str = EnhancerUtils.synchronize(new IncrementableInteger());
         try {
             //noinspection UnusedDeclaration
             LockProvider provider = (LockProvider) str;
         } catch( ClassCastException e ) {
-            Assert.fail();
+            fail();
         }
     }
 
-    @Test
-    public void synchronizeIsFacade() {
+    public void testSynchronizeIsFacade() {
         IncrementableInteger str = EnhancerUtils.synchronize(new IncrementableInteger());
         try {
             //noinspection UnusedDeclaration,unchecked
             Facade<IncrementableInteger> provider = (Facade<IncrementableInteger>) str;
         } catch( ClassCastException e ) {
-            Assert.fail();
+            fail();
         }
     }
 
-    @Test
-    public void synchronizeIsSynchronized() throws InterruptedException {
+    public void testSynchronizeIsSynchronized() throws InterruptedException {
         final IncrementableInteger integer = EnhancerUtils.synchronize(new IncrementableInteger());
 
         Thread[] threads = {
@@ -131,6 +127,6 @@ public class EnhancerUtilsTest {
 
         // Prevents ambiguous method call.
         //noinspection RedundantCast
-        Assert.assertEquals(threads.length * ITERATIONS, (long) integer.getNum().getReferent());
+        assertEquals(threads.length * ITERATIONS, (long) integer.getNum().getReferent());
     }
 }

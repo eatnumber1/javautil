@@ -36,6 +36,7 @@ public class FileBackedMappedInteger extends AbstractFileBackedNumber implements
     public FileBackedMappedInteger( @NotNull File file ) throws IOException {
         super(file);
         buf = getValueChannel().map(MapMode.READ_WRITE, 0, SIZE);
+        setValue(0);
     }
 
     @NotNull

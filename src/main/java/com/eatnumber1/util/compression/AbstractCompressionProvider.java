@@ -21,17 +21,17 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.commons.io.IOUtils;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
 public abstract class AbstractCompressionProvider implements CompressionProvider {
+    @NotNull
     @Override
-    public byte[] compress( @Nullable byte[] data ) throws CompressionException {
+    public byte[] compress( @NotNull byte[] data ) throws CompressionException {
         InputStream compressedData = compress(new ByteArrayInputStream(data));
-        if( compressedData == null ) return null;
         try {
             return IOUtils.toByteArray(compressedData);
         } catch( IOException e ) {
@@ -39,10 +39,10 @@ public abstract class AbstractCompressionProvider implements CompressionProvider
         }
     }
 
+    @NotNull
     @Override
-    public byte[] decompress( @Nullable byte[] data ) throws CompressionException {
+    public byte[] decompress( @NotNull byte[] data ) throws CompressionException {
         InputStream decompressedData = decompress(new ByteArrayInputStream(data));
-        if( decompressedData == null ) return null;
         try {
             return IOUtils.toByteArray(decompressedData);
         } catch( IOException e ) {

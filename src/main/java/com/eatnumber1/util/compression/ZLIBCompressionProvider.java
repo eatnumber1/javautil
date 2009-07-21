@@ -23,6 +23,7 @@ import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import net.jcip.annotations.NotThreadSafe;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -62,9 +63,9 @@ public class ZLIBCompressionProvider extends AbstractCompressionProvider {
         this.buflen = buflen;
     }
 
+    @NotNull
     @Override
-    public InputStream compress( @Nullable InputStream data ) throws CompressionException {
-        if( data == null ) return null;
+    public InputStream compress( @NotNull InputStream data ) throws CompressionException {
         if( deflater == null ) {
             return new DeflaterInputStream(data);
         } else if( buflen == null ) {
@@ -74,9 +75,9 @@ public class ZLIBCompressionProvider extends AbstractCompressionProvider {
         }
     }
 
+    @NotNull
     @Override
-    public InputStream decompress( @Nullable InputStream data ) throws CompressionException {
-        if( data == null ) return null;
+    public InputStream decompress( @NotNull InputStream data ) throws CompressionException {
         if( inflater == null ) {
             return new InflaterInputStream(data);
         } else if( buflen == null ) {

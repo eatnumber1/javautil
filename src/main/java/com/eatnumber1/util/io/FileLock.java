@@ -14,25 +14,14 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.compression;
+package com.eatnumber1.util.io;
 
-import java.io.InputStream;
-import org.jetbrains.annotations.NotNull;
+import java.io.IOException;
 
 /**
  * @author Russell Harmon
- * @since Jul 13, 2007
+ * @since Jul 17, 2009
  */
-public interface CompressionProvider {
-    @NotNull
-    InputStream compress( @NotNull InputStream data ) throws CompressionException;
-
-    @NotNull
-    byte[] compress( @NotNull byte[] data ) throws CompressionException;
-
-    @NotNull
-    InputStream decompress( @NotNull InputStream data ) throws CompressionException;
-
-    @NotNull
-    byte[] decompress( @NotNull byte[] data ) throws CompressionException;
+public interface FileLock {
+    void release() throws IOException;
 }

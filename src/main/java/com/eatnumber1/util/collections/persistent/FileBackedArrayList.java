@@ -29,6 +29,7 @@ import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileChannel.MapMode;
+import java.nio.channels.FileLock;
 import java.util.AbstractList;
 import java.util.RandomAccess;
 import net.jcip.annotations.NotThreadSafe;
@@ -75,6 +76,9 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
     private long listTruncateSize, dataTruncateSize;
 
     private boolean closed;
+
+    @NotNull
+    private FileLock lock;
 
     private class Element {
         private long start;

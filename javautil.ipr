@@ -306,15 +306,15 @@
   </component>
   <component name="WebServicesPlugin" addRequiredLibraries="true" />
   <component name="libraryTable">
-    <library name="Maven: junit:junit:4.6">
+    <library name="Maven: commons-collections:commons-collections:3.2.1">
       <CLASSES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.6/junit-4.6.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1.jar!/" />
       </CLASSES>
       <JAVADOC>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.6/junit-4.6-javadoc.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-javadoc.jar!/" />
       </JAVADOC>
       <SOURCES>
-        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.6/junit-4.6-sources.jar!/" />
+        <root url="jar://$MAVEN_REPOSITORY$/commons-collections/commons-collections/3.2.1/commons-collections-3.2.1-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Maven: commons-io:commons-io:1.4">
@@ -414,6 +414,17 @@
       </JAVADOC>
       <SOURCES>
         <root url="jar://$MAVEN_REPOSITORY$/net/sourceforge/collections/collections-generic/4.01/collections-generic-4.01-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Maven: junit:junit:4.5">
+      <CLASSES>
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.5/junit-4.5.jar!/" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.5/junit-4.5-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES>
+        <root url="jar://$MAVEN_REPOSITORY$/junit/junit/4.5/junit-4.5-sources.jar!/" />
       </SOURCES>
     </library>
   </component>

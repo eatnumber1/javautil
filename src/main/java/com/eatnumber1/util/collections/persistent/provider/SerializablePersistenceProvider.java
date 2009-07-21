@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -30,9 +31,9 @@ import org.jetbrains.annotations.Nullable;
  * @since Jul 13, 2007
  */
 public class SerializablePersistenceProvider<T extends Serializable> implements PersistenceProvider<T> {
-    @Nullable
+    @NotNull
     public byte[] toBytes( @Nullable T object ) throws PersistenceException {
-        if( object == null ) return null;
+        if( object == null ) return new byte[0];
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
         ObjectOutputStream out;
         try {
@@ -49,8 +50,8 @@ public class SerializablePersistenceProvider<T extends Serializable> implements 
     }
 
     @Nullable
-    public T fromBytes( @Nullable byte[] bytes ) throws PersistenceException {
-        if( bytes == null ) return null;
+    public T fromBytes( @NotNull byte[] bytes ) throws PersistenceException {
+        if( bytes.length == 0 ) return null;
         ObjectInputStream in;
         T object;
         try {

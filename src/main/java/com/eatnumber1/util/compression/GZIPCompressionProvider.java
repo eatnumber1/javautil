@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -41,9 +42,9 @@ public class GZIPCompressionProvider extends AbstractCompressionProvider {
 
     }
 
+    @NotNull
     @Override
-    public InputStream compress( @Nullable final InputStream data ) throws CompressionException {
-        if( data == null ) return null;
+    public InputStream compress( @NotNull final InputStream data ) throws CompressionException {
         OutputStreamAdapter adapter = new OutputStreamAdapter();
         final OutputStream out;
         try {
@@ -55,15 +56,15 @@ public class GZIPCompressionProvider extends AbstractCompressionProvider {
         return new InputStream() {
             @Override
             public int read() throws IOException {
-                assert data != null;
                 out.write(data.read());
                 return in.read();
             }
         };
     }
 
+    @NotNull
     @Override
-    public InputStream decompress( @Nullable InputStream data ) throws CompressionException {
+    public InputStream decompress( @NotNull InputStream data ) throws CompressionException {
         try {
             return buflen == null ? new GZIPInputStream(data) : new GZIPInputStream(data, buflen);
         } catch( IOException e ) {

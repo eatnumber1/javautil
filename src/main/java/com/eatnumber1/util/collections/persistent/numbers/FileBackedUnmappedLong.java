@@ -34,6 +34,7 @@ public class FileBackedUnmappedLong extends AbstractFileBackedNumber implements 
     public FileBackedUnmappedLong( @NotNull File file ) throws IOException {
         super(file);
         getValueChannel().force(true);
+        setValue(0);
     }
 
     @NotNull

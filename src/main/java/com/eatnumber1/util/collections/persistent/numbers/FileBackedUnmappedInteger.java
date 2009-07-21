@@ -34,6 +34,7 @@ public class FileBackedUnmappedInteger extends AbstractFileBackedNumber implemen
     public FileBackedUnmappedInteger( @NotNull File file ) throws IOException {
         super(file);
         getValueChannel().force(true);
+        setValue(0);
     }
 
     @NotNull
@@ -43,6 +44,7 @@ public class FileBackedUnmappedInteger extends AbstractFileBackedNumber implemen
         try {
             channel.position(0);
             IOUtils.read(channel, buf, SIZE);
+            buf.position(0);
             return buf.getInt();
         } catch( IOException e ) {
             throw new RuntimeException(e);

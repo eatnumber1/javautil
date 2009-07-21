@@ -17,6 +17,7 @@
 package com.eatnumber1.util.collections.persistent.provider;
 
 import com.eatnumber1.util.collections.persistent.PersistenceException;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,9 +25,9 @@ import org.jetbrains.annotations.Nullable;
  * @since Jul 13, 2007
  */
 public interface PersistenceProvider<T> {
-    @Nullable
+    @NotNull
     byte[] toBytes( @Nullable T object ) throws PersistenceException;
 
     @Nullable
-    T fromBytes( @Nullable byte[] bytes ) throws PersistenceException;
+    T fromBytes( @NotNull byte[] bytes ) throws PersistenceException;
 }

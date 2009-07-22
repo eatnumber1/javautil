@@ -16,19 +16,15 @@
 
 package com.eatnumber1.util.concurrent.lock;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 21, 2009
+ * @since Jul 22, 2009
  */
-public interface CompositeLockFactory {
+public interface OrderedLock extends CompositeLock {
     @NotNull
-    CompositeLock getLock();
-
-    void addLocks( @NotNull Lock... lock );
-
-    void addLocks( @NotNull Collection<? extends Lock> locks );
+    List<Lock> getLockList();
 }

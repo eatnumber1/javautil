@@ -22,13 +22,11 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 21, 2009
+ * @since Jul 22, 2009
  */
-public interface CompositeLockFactory {
+public abstract class AbstractOrderedLock implements OrderedLock {
     @NotNull
-    CompositeLock getLock();
-
-    void addLocks( @NotNull Lock... lock );
-
-    void addLocks( @NotNull Collection<? extends Lock> locks );
+    public Collection<Lock> getLocks() {
+        return getLockList();
+    }
 }

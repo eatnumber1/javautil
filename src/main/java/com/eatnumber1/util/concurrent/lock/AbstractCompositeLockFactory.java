@@ -22,11 +22,10 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 21, 2009
+ * @since Jul 22, 2009
  */
 public abstract class AbstractCompositeLockFactory implements CompositeLockFactory {
-    @NotNull
-    public CompositeLock getLock( @NotNull Lock... locks ) {
-        return getLock(Arrays.asList(locks));
+    public void addLocks( @NotNull Lock... locks ) {
+        addLocks(Arrays.asList(locks));
     }
 }

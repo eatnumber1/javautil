@@ -1,0 +1,46 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0" is_locked="false">
+    <option name="myName" value="Project Default" />
+    <option name="myLocal" value="false" />
+    <inspection_tool class="AntDuplicateImportedTargetsInspection" level="WARNING" enabled="false" />
+    <inspection_tool class="DuplicateThrows" level="WARNING" enabled="false" />
+    <inspection_tool class="Fix shebang" level="INFO" enabled="true">/bin/sh#/bin/bash</inspection_tool>
+    <inspection_tool class="JavaDoc" level="WARNING" enabled="true">
+      <option name="TOP_LEVEL_CLASS_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+          <option name="REQUIRED_TAGS" value="@author" />
+        </value>
+      </option>
+      <option name="INNER_CLASS_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+          <option name="REQUIRED_TAGS" value="" />
+        </value>
+      </option>
+      <option name="METHOD_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+          <option name="REQUIRED_TAGS" value="@param@throws or @exception" />
+        </value>
+      </option>
+      <option name="FIELD_OPTIONS">
+        <value>
+          <option name="ACCESS_JAVADOC_REQUIRED_FOR" value="none" />
+          <option name="REQUIRED_TAGS" value="" />
+        </value>
+      </option>
+      <option name="IGNORE_DEPRECATED" value="false" />
+      <option name="IGNORE_JAVADOC_PERIOD" value="true" />
+      <option name="myAdditionalJavadocTags" value="" />
+    </inspection_tool>
+    <inspection_tool class="ThrowableInstanceNeverThrown" level="WARNING" enabled="false" />
+    <inspection_tool class="SerializableHasSerialVersionUIDField" level="WARNING" enabled="true">
+      <option name="superClassString" value="java.awt.Component,java.lang.Exception" />
+    </inspection_tool>
+    <inspection_tool class="PointlessArithmeticExpression" level="WARNING" enabled="true">
+      <option name="m_ignoreExpressionsContainingConstants" value="true" />
+    </inspection_tool>
+    <inspection_tool class="NullArgumentToVariableArgMethod" level="WARNING" enabled="false" />
+  </profile>
+</component>

@@ -33,8 +33,29 @@ public class InputStreamAdapter extends InputStream {
     @NotNull
     private BlockingDeque<Integer> data = new LinkedBlockingDeque<Integer>();
 
+    private boolean closed = false;
+
+    private class OS extends OutputStream {
+        @Override
+        public void write( int b ) throws IOException {
+            try {
+                data.putLast(b);
+            } catch( InterruptedException e ) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+        }
+    }
+
+    private OutputStream adapter = new OS();
+
     @Override
     public int read() throws IOException {
+        if( closed && data.size() == 0 ) return -1;
         try {
             return data.takeFirst();
         } catch( InterruptedException e ) {
@@ -43,16 +64,7 @@ public class InputStreamAdapter extends InputStream {
     }
 
     public OutputStream asOutputStream() {
-        return new OutputStream() {
-            @Override
-            public void write( int b ) throws IOException {
-                try {
-                    data.putLast(b);
-                } catch( InterruptedException e ) {
-                    throw new RuntimeException(e);
-                }
-            }
-        };
+        return adapter;
     }
 
     @Override

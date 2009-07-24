@@ -33,6 +33,8 @@ public class OutputStreamAdapter extends OutputStream {
     @NotNull
     private BlockingDeque<Integer> data = new LinkedBlockingDeque<Integer>();
 
+    private boolean closed = false;
+
     public OutputStreamAdapter() {
     }
 
@@ -50,6 +52,7 @@ public class OutputStreamAdapter extends OutputStream {
         return new InputStream() {
             @Override
             public int read() throws IOException {
+                if( closed && data.size() == 0 ) return -1;
                 try {
                     return data.takeFirst();
                 } catch( InterruptedException e ) {
@@ -62,5 +65,11 @@ public class OutputStreamAdapter extends OutputStream {
                 return data.size();
             }
         };
+    }
+
+    @Override
+    public void close() throws IOException {
+        closed = true;
+        super.close();
     }
 }

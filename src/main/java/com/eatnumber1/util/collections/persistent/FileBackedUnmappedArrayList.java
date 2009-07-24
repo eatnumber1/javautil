@@ -17,7 +17,6 @@
 package com.eatnumber1.util.collections.persistent;
 
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedInteger;
-import com.eatnumber1.util.collections.persistent.numbers.FileBackedMappedInteger;
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedUnmappedInteger;
 import com.eatnumber1.util.collections.persistent.provider.PersistenceProvider;
 import com.eatnumber1.util.io.FileUtils;
@@ -26,10 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.channels.FileChannel.MapMode;
-import java.nio.channels.FileLock;
 import java.util.AbstractList;
 import java.util.RandomAccess;
 import net.jcip.annotations.NotThreadSafe;
@@ -42,81 +38,104 @@ import org.jetbrains.annotations.Nullable;
  */
 // TODO: Optionally cache the list
 @NotThreadSafe
-public class FileBackedArrayList<T> extends AbstractList<T> implements FileBackedList<T>, RandomAccess {
+public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements FileBackedList<T>, RandomAccess {
     @NotNull
-    private static final String LIST_FILENAME = "list", DATA_FILENAME = "data", SIZE_FILENAME = "size";
+    protected static final String LIST_FILENAME = "list", DATA_FILENAME = "data", SIZE_FILENAME = "size";
 
-    private static final int POINTER_SIZE = Long.SIZE / 8;
-    private static final int OBJECT_LENGTH_SIZE = Integer.SIZE / 8;
-    private static final int ELEMENT_SIZE = POINTER_SIZE + OBJECT_LENGTH_SIZE;
-    private static final int LIST_START_POS = 0;
-
-    @NotNull
-    private RandomAccessFile listFile, dataFile;
+    protected static final int POINTER_SIZE = Long.SIZE / 8;
+    protected static final int OBJECT_LENGTH_SIZE = Integer.SIZE / 8;
+    protected static final int ELEMENT_SIZE = POINTER_SIZE + OBJECT_LENGTH_SIZE;
+    protected static final int LIST_START_POS = 0;
 
     @NotNull
-    private FileChannel listChannel, dataChannel;
+    protected RandomAccessFile listFile, dataFile;
 
     @NotNull
-    private FileBackedInteger size;
-
-    @Nullable
-    private MappedByteBuffer list_buffer;
+    protected FileChannel elementChannel, dataChannel;
 
     @NotNull
-    private ByteBuffer element_buf = ByteBuffer.allocate(ELEMENT_SIZE);
+    protected FileBackedInteger size;
 
     @NotNull
-    private PersistenceProvider<T> persistenceProvider;
-
-    private long nextFree;
-
-    private int elementsMapped;
-
-    private long listTruncateSize, dataTruncateSize;
-
-    private boolean closed;
+    protected ByteBuffer element_buf = ByteBuffer.allocate(ELEMENT_SIZE);
 
     @NotNull
-    private FileLock lock;
+    protected PersistenceProvider<T> persistenceProvider;
 
-    private class Element {
-        private long start;
-        private int size;
+    protected long nextFree;
 
-        private Element( long start, int size ) {
+    protected long listTruncateSize, dataTruncateSize;
+
+    protected boolean closed;
+
+    protected abstract class Element {
+        protected long start;
+        protected int size;
+
+        public Element( long start, int size ) {
             this.start = start;
             this.size = size;
         }
 
-        private Element( int index ) throws IOException {
-            if( index < elementsMapped ) {
+        protected Element() {
+        }
+
+        public abstract void write( int index ) throws IOException;
+    }
+
+    protected class UnmappedElement extends Element {
+        public UnmappedElement( long start, int size ) {
+            super(start, size);
+        }
+
+        public UnmappedElement( int index ) throws IOException {
+            element_buf.position(0);
+            readData(element_buf, elementChannel, getElementOffset(index));
+            element_buf.position(0);
+            start = element_buf.getLong();
+            size = element_buf.getInt();
+            /*if( index < elementsMapped ) {
                 list_buffer.position(getMappedElementOffset(index));
                 start = list_buffer.getLong();
                 size = list_buffer.getInt();
             } else {
                 element_buf.position(0);
-                readData(element_buf, listChannel, getUnmappedElementOffset(index));
+                readData(element_buf, elementChannel, getElementOffset(index));
                 element_buf.position(0);
                 start = element_buf.getLong();
                 size = element_buf.getInt();
-            }
+            }*/
         }
 
-        private void write( int index ) throws IOException {
-            if( index < elementsMapped ) {
+        public void write( int index ) throws IOException {
+            element_buf.position(0);
+            element_buf.putLong(start).putInt(size);
+            element_buf.position(0);
+            writeData(element_buf, elementChannel, getElementOffset(index));
+
+            /*if( index < elementsMapped ) {
                 list_buffer.position(getMappedElementOffset(index));
                 list_buffer.putLong(start).putInt(size);
             } else {
                 element_buf.position(0);
                 element_buf.putLong(start).putInt(size);
                 element_buf.position(0);
-                writeData(element_buf, listChannel, getUnmappedElementOffset(index));
-            }
+                writeData(element_buf, elementChannel, getElementOffset(index));
+            }*/
         }
     }
 
-    public FileBackedArrayList( @NotNull File file, boolean map, @NotNull PersistenceProvider<T> persistenceProvider ) throws IOException {
+    @NotNull
+    protected Element newElement( long start, int size ) {
+        return new UnmappedElement(start, size);
+    }
+
+    @NotNull
+    protected Element newElement( int index ) throws IOException {
+        return new UnmappedElement(index);
+    }
+
+    public FileBackedUnmappedArrayList( @NotNull File file, @NotNull PersistenceProvider<T> persistenceProvider ) throws IOException {
         this.persistenceProvider = persistenceProvider;
         if( file.exists() ) {
             if( !file.isDirectory() ) throw new IOException(file + " is not a directory.");
@@ -134,41 +153,27 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
         listTruncateSize = dataTruncateSize = 0;
         this.listFile = new RandomAccessFile(listFile, "rw");
         this.dataFile = new RandomAccessFile(dataFile, "rw");
-        listChannel = this.listFile.getChannel();
+        elementChannel = this.listFile.getChannel();
         dataChannel = this.dataFile.getChannel();
         File sizeFile = new File(file, SIZE_FILENAME);
-        size = map ? new FileBackedMappedInteger(sizeFile) : new FileBackedUnmappedInteger(sizeFile);
-        if( !map ) elementsMapped = -1;
-        remap();
+        size = newSizeInteger(sizeFile);
         if( listFileExists && dataFileExists ) {
-            Element last = new Element(size() - 1);
+            Element last = newElement(size() - 1);
             nextFree = last.start + last.size;
         } else {
             nextFree = 0;
         }
     }
 
-    public void remap() throws IOException {
-        if( isMapped() ) {
-            elementsMapped = size();
-            if( list_buffer != null ) list_buffer.force();
-            list_buffer = null;
-            truncate();
-            list_buffer = listChannel.map(MapMode.READ_WRITE, LIST_START_POS, elementsMapped * ELEMENT_SIZE);
-        }
+    @NotNull
+    protected FileBackedInteger newSizeInteger( @NotNull File sizeFile ) throws IOException {
+        return new FileBackedUnmappedInteger(sizeFile);
     }
 
-    public void load() {
-        if( isMapped() ) {
-            assert list_buffer != null;
-            list_buffer.load();
-        }
-    }
-
-    private void truncate() throws IOException {
+    protected void truncate() throws IOException {
         if( listTruncateSize > 0 ) {
             try {
-                listChannel.truncate(listChannel.size() - listTruncateSize);
+                elementChannel.truncate(elementChannel.size() - listTruncateSize);
                 listTruncateSize = 0;
             } catch( IOException e ) {
                 // Ignore
@@ -186,53 +191,23 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
     }
 
     public boolean isMapped() {
-        return elementsMapped != -1;
-    }
-
-    public void setMapped( boolean map ) throws IOException {
-        if( map ) {
-            elementsMapped = 0;
-            remap();
-        } else {
-            if( elementsMapped != -1 ) {
-                assert list_buffer != null;
-                list_buffer.force();
-                list_buffer = null;
-            }
-            elementsMapped = -1;
-        }
+        return false;
     }
 
     public void close() throws IOException {
         if( !closed ) {
             closed = true;
-            try {
-                flush();
-                size.close();
-            } finally {
-                try {
-                    listChannel.close();
-                } finally {
-                    try {
-                        dataChannel.close();
-                    } finally {
-                        try {
-                            listFile.close();
-                        } finally {
-                            dataFile.close();
-                        }
-                    }
-                }
-            }
+            flush();
+            size.close();
+            elementChannel.close();
+            dataChannel.close();
+            listFile.close();
+            dataFile.close();
         }
     }
 
     public void flush() throws IOException {
         size.flush();
-        if( isMapped() ) {
-            assert list_buffer != null;
-            list_buffer.force();
-        }
         truncate();
     }
 
@@ -245,12 +220,8 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
         }
     }
 
-    private int getUnmappedElementOffset( int index ) {
-        return LIST_START_POS + getMappedElementOffset(index);
-    }
-
-    private int getMappedElementOffset( int index ) {
-        return index * ELEMENT_SIZE;
+    protected int getElementOffset( int index ) {
+        return LIST_START_POS + index * ELEMENT_SIZE;
     }
 
     private void readData( @NotNull ByteBuffer dst, @NotNull FileChannel channel, long start ) throws IOException {
@@ -271,7 +242,7 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
 
     @Nullable
     private T readObject( int index ) throws IOException, PersistenceException {
-        return readObject(new Element(index));
+        return readObject(newElement(index));
     }
 
     @Nullable
@@ -286,8 +257,8 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
         long start = newStart;
         int size = size();
         while( idx != size ) {
-            Element element = new Element(idx++);
-            new Element(start, element.size).write(newIdx++);
+            Element element = newElement(idx++);
+            newElement(start, element.size).write(newIdx++);
             ByteBuffer object = ByteBuffer.allocate(element.size);
             readData(object, dataChannel, element.start);
             object.position(0);
@@ -302,14 +273,14 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
     private void moveRight( int index, int newIndex, long newStart ) throws IOException {
         int size = size();
         assert size >= newIndex && newIndex >= index;
-        long indexStart = index == size ? 0 : new Element(index).start;
+        long indexStart = index == size ? 0 : newElement(index).start;
         long dataSpaceNeeded = newStart - indexStart;
         assert newStart >= dataSpaceNeeded;
         int elementSpaceNeeded = newIndex - index;
         boolean setNextFree = false;
         for( int i = size - 1; i >= newIndex - 1; i-- ) {
             // Read the element
-            Element diskElement = new Element(i);
+            Element diskElement = newElement(i);
 
             // Move the data
             ByteBuffer object = ByteBuffer.allocate(diskElement.size);
@@ -336,9 +307,9 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
         Element element;
         int size = size();
         if( index == size ) {
-            element = new Element(nextFree, buf.capacity());
+            element = newElement(nextFree, buf.capacity());
         } else {
-            element = new Element(index);
+            element = newElement(index);
         }
         int newSize = buf.capacity();
         if( element.size != newSize ) {
@@ -391,7 +362,7 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
         try {
             if( index != size ) {
                 ByteBuffer buf = ByteBuffer.wrap(persistenceProvider.toBytes(element));
-                Element ele = new Element(index);
+                Element ele = newElement(index);
                 moveRight(index, index + 1, ele.start + buf.capacity());
                 writeData(buf, dataChannel, ele.start);
                 ele.size = buf.capacity();
@@ -412,7 +383,7 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
         int size = size();
         if( index < 0 || index >= size ) throw new IndexOutOfBoundsException();
         try {
-            Element element = new Element(index);
+            Element element = newElement(index);
             T object = readObject(element);
             if( index != size - 1 ) {
                 moveLeft(index + 1, index, element.start);
@@ -427,7 +398,7 @@ public class FileBackedArrayList<T> extends AbstractList<T> implements FileBacke
         }
     }
 
-    private void setSize( int size ) {
+    protected void setSize( int size ) {
         this.size.intValue(size);
     }
 

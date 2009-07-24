@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
+import com.eatnumber1.util.nio.MappedByteBufferUtils;
 import java.io.File;
 import java.io.IOException;
 import java.nio.MappedByteBuffer;
@@ -58,5 +59,10 @@ public class FileBackedMappedInteger extends AbstractFileBackedNumber implements
     public void flush() throws IOException {
         buf.force();
         super.flush();
+    }
+
+    @Override
+    public void close() throws IOException {
+        MappedByteBufferUtils.unmap(buf);
     }
 }

@@ -22,31 +22,23 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.collections.list.AbstractTestList;
-import org.junit.Ignore;
 
 /**
  * @author Russell Harmon
- * @since Jul 24, 2009
+ * @since Jul 13, 2007
  */
-@Ignore
-public class FileBackedMappedArrayListTest extends AbstractTestList {
-    public FileBackedMappedArrayListTest( String s ) {
+public class FileBackedUnmappedArrayListTest extends AbstractTestList {
+    public FileBackedUnmappedArrayListTest( String s ) {
         super(s);
     }
 
     public List makeEmptyList() {
         try {
-            File tempFile = FileUtils.createTempDirectory(FileBackedMappedArrayListTest.class.getSimpleName());
+            File tempFile = FileUtils.createTempDirectory(FileBackedUnmappedArrayListTest.class.getSimpleName());
             FileUtils.forceDeleteOnExit(tempFile);
-            return new FileBackedMappedArrayList<String>(tempFile, new SerializablePersistenceProvider<String>());
+            return new FileBackedUnmappedArrayList<String>(tempFile, new SerializablePersistenceProvider<String>());
         } catch( IOException e ) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void testRemap() throws IOException {
-        FileBackedMappedArrayList list = (FileBackedMappedArrayList) makeFullList();
-        list.remap();
-        list.load();
     }
 }

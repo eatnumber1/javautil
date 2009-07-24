@@ -94,17 +94,6 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
             element_buf.position(0);
             start = element_buf.getLong();
             size = element_buf.getInt();
-            /*if( index < elementsMapped ) {
-                list_buffer.position(getMappedElementOffset(index));
-                start = list_buffer.getLong();
-                size = list_buffer.getInt();
-            } else {
-                element_buf.position(0);
-                readData(element_buf, elementChannel, getElementOffset(index));
-                element_buf.position(0);
-                start = element_buf.getLong();
-                size = element_buf.getInt();
-            }*/
         }
 
         public void write( int index ) throws IOException {
@@ -112,16 +101,6 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
             element_buf.putLong(start).putInt(size);
             element_buf.position(0);
             writeData(element_buf, elementChannel, getElementOffset(index));
-
-            /*if( index < elementsMapped ) {
-                list_buffer.position(getMappedElementOffset(index));
-                list_buffer.putLong(start).putInt(size);
-            } else {
-                element_buf.position(0);
-                element_buf.putLong(start).putInt(size);
-                element_buf.position(0);
-                writeData(element_buf, elementChannel, getElementOffset(index));
-            }*/
         }
     }
 
@@ -151,14 +130,16 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         FileUtils.forceCreateNewFile(listFile);
         FileUtils.forceCreateNewFile(dataFile);
         listTruncateSize = dataTruncateSize = 0;
-        this.listFile = new RandomAccessFile(listFile, "rw");
-        this.dataFile = new RandomAccessFile(dataFile, "rw");
+        // TODO: Find a way so the mapped version can pass only "rw" here.
+        this.listFile = new RandomAccessFile(listFile, "rws");
+        this.dataFile = new RandomAccessFile(dataFile, "rws");
         elementChannel = this.listFile.getChannel();
         dataChannel = this.dataFile.getChannel();
         File sizeFile = new File(file, SIZE_FILENAME);
         size = newSizeInteger(sizeFile);
-        if( listFileExists && dataFileExists ) {
-            Element last = newElement(size() - 1);
+        int size = size();
+        if( size != 0 && listFileExists && dataFileExists ) {
+            Element last = newElement(size - 1);
             nextFree = last.start + last.size;
         } else {
             nextFree = 0;

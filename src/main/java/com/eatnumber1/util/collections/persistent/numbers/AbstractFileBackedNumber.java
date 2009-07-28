@@ -97,6 +97,7 @@ public abstract class AbstractFileBackedNumber extends AbstractMutableNumber imp
         if( !isClosed ) {
             isClosed = true;
             flush();
+            provider.close();
         }
     }
 

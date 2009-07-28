@@ -18,6 +18,7 @@ package com.eatnumber1.util.collections.persistent;
 
 import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
 import com.eatnumber1.util.collections.persistent.channel.ChannelProviderFactory;
+import com.eatnumber1.util.collections.persistent.channel.ChannelVisitor;
 import com.eatnumber1.util.collections.persistent.channel.SimpleChannelProviderFactory;
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedInteger;
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedUnmappedInteger;
@@ -26,7 +27,6 @@ import com.eatnumber1.util.io.FileUtils;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.AbstractList;
@@ -51,10 +51,7 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
     protected static final int LIST_START_POS = 0;
 
     @NotNull
-    protected RandomAccessFile listFile, dataFile;
-
-    @NotNull
-    protected FileChannel elementChannel, dataChannel;
+    protected ChannelProvider elementChannel, dataChannel;
 
     @NotNull
     protected FileBackedInteger size;
@@ -137,11 +134,8 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         FileUtils.forceCreateNewFile(listFile);
         FileUtils.forceCreateNewFile(dataFile);
         listTruncateSize = dataTruncateSize = 0;
-        // TODO: Find a way so the mapped version can pass only "rw" here.
-        this.listFile = new RandomAccessFile(listFile, "rws");
-        this.dataFile = new RandomAccessFile(dataFile, "rws");
-        elementChannel = this.listFile.getChannel();
-        dataChannel = this.dataFile.getChannel();
+        elementChannel = channelProviderFactory.create(listFile);
+        dataChannel = channelProviderFactory.create(dataFile);
         File sizeFile = new File(file, SIZE_FILENAME);
         size = newSizeInteger(sizeFile, channelProviderFactory.create(sizeFile));
         int size = size();
@@ -160,21 +154,28 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
 
     protected void truncate() throws IOException {
         if( listTruncateSize > 0 ) {
-            try {
-                elementChannel.truncate(elementChannel.size() - listTruncateSize);
-                listTruncateSize = 0;
-            } catch( IOException e ) {
-                // Ignore
-            }
+            elementChannel.visitValueChannel(new ChannelVisitor<Void>() {
+                @Override
+                public Void visit( @NotNull FileChannel channel ) throws IOException {
+                    try {
+                        channel.truncate(channel.size() - listTruncateSize);
+                        listTruncateSize = 0;
+                    } catch( IOException e ) {
+                        // Ignore
+                    }
+                    return null;
+                }
+            });
         }
         if( dataTruncateSize > 0 ) {
-            //noinspection CaughtExceptionImmediatelyRethrown
-            try {
-                dataChannel.truncate(dataChannel.size() - dataTruncateSize);
-                dataTruncateSize = 0;
-            } catch( IOException e ) {
-                throw e;
-            }
+            dataChannel.visitValueChannel(new ChannelVisitor<Void>() {
+                @Override
+                public Void visit( @NotNull FileChannel channel ) throws IOException {
+                    channel.truncate(channel.size() - dataTruncateSize);
+                    dataTruncateSize = 0;
+                    return null;
+                }
+            });
         }
     }
 
@@ -189,8 +190,6 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
             size.close();
             elementChannel.close();
             dataChannel.close();
-            listFile.close();
-            dataFile.close();
         }
     }
 
@@ -212,20 +211,32 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         return LIST_START_POS + index * ELEMENT_SIZE;
     }
 
-    private void readData( @NotNull ByteBuffer dst, @NotNull FileChannel channel, long start ) throws IOException {
-        int bytesRead = channel.position(start).read(dst);
-        if( bytesRead == -1 ) {
-            throw new EOFException("Premature end of file.");
-        } else if( bytesRead != dst.capacity() ) {
-            throw new IOException("Unable to read element fully.");
-        }
+    private void readData( @NotNull final ByteBuffer dst, @NotNull ChannelProvider channel, final long start ) throws IOException {
+        channel.visitValueChannel(new ChannelVisitor<Void>() {
+            @Override
+            public Void visit( @NotNull FileChannel channel ) throws IOException {
+                int bytesRead = channel.position(start).read(dst);
+                if( bytesRead == -1 ) {
+                    throw new EOFException("Premature end of file.");
+                } else if( bytesRead != dst.capacity() ) {
+                    throw new IOException("Unable to read element fully.");
+                }
+                return null;
+            }
+        });
     }
 
-    private void writeData( @NotNull ByteBuffer src, @NotNull FileChannel channel, long start ) throws IOException {
-        int bytesWritten = channel.position(start).write(src);
-        if( bytesWritten != src.capacity() ) {
-            throw new IOException("Unable to write element fully.");
-        }
+    private void writeData( @NotNull final ByteBuffer src, @NotNull ChannelProvider channel, final long start ) throws IOException {
+        channel.visitValueChannel(new ChannelVisitor<Void>() {
+            @Override
+            public Void visit( @NotNull FileChannel channel ) throws IOException {
+                int bytesWritten = channel.position(start).write(src);
+                if( bytesWritten != src.capacity() ) {
+                    throw new IOException("Unable to write element fully.");
+                }
+                return null;
+            }
+        });
     }
 
     @Nullable
@@ -395,7 +406,12 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         listTruncateSize += ELEMENT_SIZE * size();
         setSize(0);
         try {
-            dataTruncateSize += dataChannel.size();
+            dataTruncateSize += dataChannel.visitValueChannel(new ChannelVisitor<Long>() {
+                @Override
+                public Long visit( @NotNull FileChannel channel ) throws IOException {
+                    return channel.size();
+                }
+            });
             truncate();
         } catch( IOException e ) {
             throw new RuntimeException(e);

@@ -130,9 +130,10 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         if( listFileExists || dataFileExists ) {
             if( !listFileExists ) throw new IOException("List file is missing. The list is corrupt.");
             if( !dataFileExists ) throw new IOException("Data file is missing. The list is corrupt.");
+        } else {
+            FileUtils.createNewFile(listFile);
+            FileUtils.createNewFile(dataFile);
         }
-        FileUtils.forceCreateNewFile(listFile);
-        FileUtils.forceCreateNewFile(dataFile);
         listTruncateSize = dataTruncateSize = 0;
         elementChannel = channelProviderFactory.create(listFile);
         dataChannel = channelProviderFactory.create(dataFile);

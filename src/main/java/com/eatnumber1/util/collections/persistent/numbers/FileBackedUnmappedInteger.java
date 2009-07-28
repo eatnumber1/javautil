@@ -16,55 +16,40 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.io.IOUtils;
+import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 14, 2009
  */
-public class FileBackedUnmappedInteger extends AbstractFileBackedNumber implements FileBackedInteger {
-    public static final long serialVersionUID = -9036741450133104409L;
+public class FileBackedUnmappedInteger extends AbstractFileBackedUnmappedNumber implements FileBackedInteger {
     public static final int SIZE = Integer.SIZE / 8;
 
     public FileBackedUnmappedInteger( @NotNull File file ) throws IOException {
         super(file);
-        getValueChannel().force(true);
-        setValue(0);
+    }
+
+    public FileBackedUnmappedInteger( @NotNull File file, @NotNull ChannelProvider channelProvider ) throws IOException {
+        super(file, channelProvider);
+    }
+
+    @Override
+    public int getSize() {
+        return SIZE;
     }
 
     @NotNull
-    protected Number getValue() {
-        FileChannel channel = getValueChannel();
-        ByteBuffer buf = ByteBuffer.allocate(SIZE);
-        try {
-            channel.position(0);
-            IOUtils.read(channel, buf, SIZE);
-            buf.position(0);
-            return buf.getInt();
-        } catch( IOException e ) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    protected Number getValue( @NotNull ByteBuffer buf ) {
+        return buf.getInt();
     }
 
-    protected void setValue( @NotNull Number number ) {
-        FileChannel channel = getValueChannel();
-        ByteBuffer buf = ByteBuffer.allocate(SIZE);
+    @Override
+    protected void setValue( @NotNull ByteBuffer buf, @NotNull Number number ) {
         buf.putInt(number.intValue());
-        buf.position(0);
-        try {
-            channel.position(0);
-            IOUtils.write(channel, buf, SIZE);
-        } catch( IOException e ) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean isMapped() {
-        return false;
     }
 }

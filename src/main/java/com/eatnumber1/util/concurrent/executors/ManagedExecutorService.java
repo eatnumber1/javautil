@@ -1,6 +1,5 @@
 package com.eatnumber1.util.concurrent.executors;
 
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.ThreadAdapter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -143,7 +142,7 @@ public class ManagedExecutorService implements ExecutorService {
     }
 
     @Override
-    public <T> List<Future<T>> invokeAll( Collection<Callable<T>> tasks ) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll( Collection<? extends Callable<T>> tasks ) throws InterruptedException {
         List<Callable<T>> taskList = new ArrayList<Callable<T>>(tasks.size());
         for( Callable<T> task : tasks ) {
             taskList.add(new CountingThreadAdaptor<T>(task));
@@ -152,7 +151,7 @@ public class ManagedExecutorService implements ExecutorService {
     }
 
     @Override
-    public <T> List<Future<T>> invokeAll( Collection<Callable<T>> tasks, long timeout, TimeUnit unit ) throws InterruptedException {
+    public <T> List<Future<T>> invokeAll( Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit ) throws InterruptedException {
         List<Callable<T>> taskList = new ArrayList<Callable<T>>(tasks.size());
         for( Callable<T> task : tasks ) {
             taskList.add(new CountingThreadAdaptor<T>(task));
@@ -161,7 +160,7 @@ public class ManagedExecutorService implements ExecutorService {
     }
 
     @Override
-    public <T> T invokeAny( Collection<Callable<T>> tasks ) throws InterruptedException, ExecutionException {
+    public <T> T invokeAny( Collection<? extends Callable<T>> tasks ) throws InterruptedException, ExecutionException {
         List<Callable<T>> taskList = new ArrayList<Callable<T>>(tasks.size());
         for( Callable<T> task : tasks ) {
             taskList.add(new CountingThreadAdaptor<T>(task));
@@ -175,7 +174,7 @@ public class ManagedExecutorService implements ExecutorService {
     }
 
     @Override
-    public <T> T invokeAny( Collection<Callable<T>> tasks, long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException, TimeoutException {
+    public <T> T invokeAny( Collection<? extends Callable<T>> tasks, long timeout, TimeUnit unit ) throws InterruptedException, ExecutionException, TimeoutException {
         getExecutorService(true);
         List<Callable<T>> taskList = new ArrayList<Callable<T>>(tasks.size());
         for( Callable<T> task : tasks ) {

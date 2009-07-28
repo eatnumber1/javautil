@@ -14,29 +14,17 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.numbers;
+package com.eatnumber1.util.collections.persistent.channel;
 
-import com.eatnumber1.util.annotations.Mutable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
- * @since Jul 14, 2009
+ * @since Jul 27, 2009
  */
-@Mutable
-public abstract class AbstractMutableNumber extends AbstractNumber implements MutableNumber {
-    public void byteValue( byte value ) {
-        longValue(value);
-    }
-
-    public void floatValue( float value ) {
-        doubleValue(value);
-    }
-
-    public void shortValue( short value ) {
-        longValue(value);
-    }
-
-    public void intValue( int value ) {
-        longValue(value);
-    }
+public interface ChannelProviderFactory {
+    @NotNull
+    ChannelProvider create( @NotNull File file ) throws FileNotFoundException;
 }

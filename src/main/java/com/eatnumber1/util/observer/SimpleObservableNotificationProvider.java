@@ -10,6 +10,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
+ *        <p/>
+ *        WARNING: If the observable's observers will be modified in any way by the observer, using this class will cause deadlock.
  */
 public class SimpleObservableNotificationProvider<T> implements ObservableNotificationProvider<T> {
     @Override

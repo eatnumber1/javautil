@@ -16,37 +16,31 @@
 
 package com.eatnumber1.util.collections.persistent;
 
+import com.eatnumber1.util.collections.persistent.channel.ReopeningChannelProviderFactory;
 import com.eatnumber1.util.collections.persistent.provider.SerializablePersistenceProvider;
 import com.eatnumber1.util.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import org.apache.commons.collections.list.AbstractTestList;
-import org.junit.Ignore;
 
 /**
  * @author Russell Harmon
- * @since Jul 24, 2009
+ * @since Jul 27, 2009
  */
-@Ignore
-public class FileBackedMappedArrayListTest extends AbstractTestList {
-    public FileBackedMappedArrayListTest( String s ) {
-        super(s);
+public class ReopeningFileBackedUnmappedArrayListTest extends AbstractTestList {
+    public ReopeningFileBackedUnmappedArrayListTest( String testName ) {
+        super(testName);
     }
 
+    @Override
     public List makeEmptyList() {
         try {
-            File tempFile = FileUtils.createTempDirectory(FileBackedMappedArrayListTest.class.getSimpleName());
+            File tempFile = FileUtils.createTempDirectory(FileBackedUnmappedArrayListTest.class.getSimpleName());
             FileUtils.forceDeleteOnExit(tempFile);
-            return new FileBackedMappedArrayList<String>(tempFile, new SerializablePersistenceProvider<String>());
+            return new FileBackedUnmappedArrayList<String>(tempFile, new SerializablePersistenceProvider<String>(), new ReopeningChannelProviderFactory("rw"));
         } catch( IOException e ) {
             throw new RuntimeException(e);
         }
-    }
-
-    public void testRemap() throws IOException {
-        FileBackedMappedArrayList list = (FileBackedMappedArrayList) makeFullList();
-        list.remap();
-        list.load();
     }
 }

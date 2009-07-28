@@ -16,6 +16,9 @@
 
 package com.eatnumber1.util.collections.persistent;
 
+import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.ChannelProviderFactory;
+import com.eatnumber1.util.collections.persistent.channel.SimpleChannelProviderFactory;
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedInteger;
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedUnmappedInteger;
 import com.eatnumber1.util.collections.persistent.provider.PersistenceProvider;
@@ -115,6 +118,10 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
     }
 
     public FileBackedUnmappedArrayList( @NotNull File file, @NotNull PersistenceProvider<T> persistenceProvider ) throws IOException {
+        this(file, persistenceProvider, new SimpleChannelProviderFactory("rw"));
+    }
+
+    public FileBackedUnmappedArrayList( @NotNull File file, @NotNull PersistenceProvider<T> persistenceProvider, @NotNull ChannelProviderFactory channelProviderFactory ) throws IOException {
         this.persistenceProvider = persistenceProvider;
         if( file.exists() ) {
             if( !file.isDirectory() ) throw new IOException(file + " is not a directory.");
@@ -136,7 +143,7 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         elementChannel = this.listFile.getChannel();
         dataChannel = this.dataFile.getChannel();
         File sizeFile = new File(file, SIZE_FILENAME);
-        size = newSizeInteger(sizeFile);
+        size = newSizeInteger(sizeFile, channelProviderFactory.create(sizeFile));
         int size = size();
         if( size != 0 && listFileExists && dataFileExists ) {
             Element last = newElement(size - 1);
@@ -147,8 +154,8 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
     }
 
     @NotNull
-    protected FileBackedInteger newSizeInteger( @NotNull File sizeFile ) throws IOException {
-        return new FileBackedUnmappedInteger(sizeFile);
+    protected FileBackedInteger newSizeInteger( @NotNull File sizeFile, @NotNull ChannelProvider channelProvider ) throws IOException {
+        return new FileBackedUnmappedInteger(sizeFile, channelProvider);
     }
 
     protected void truncate() throws IOException {

@@ -28,12 +28,8 @@ public abstract class AbstractNumber implements Number {
         return (byte) longValue();
     }
 
-    public double doubleValue() {
-        return (double) longValue();
-    }
-
     public float floatValue() {
-        return (float) longValue();
+        return (float) doubleValue();
     }
 
     public int intValue() {

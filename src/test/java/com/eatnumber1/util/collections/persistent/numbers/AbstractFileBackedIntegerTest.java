@@ -14,29 +14,27 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.numbers;
+package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.annotations.Mutable;
+import java.io.IOException;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Russell Harmon
- * @since Jul 14, 2009
+ * @since Jul 27, 2009
  */
-@Mutable
-public abstract class AbstractMutableNumber extends AbstractNumber implements MutableNumber {
-    public void byteValue( byte value ) {
-        longValue(value);
+public abstract class AbstractFileBackedIntegerTest extends AbstractFileBackedNumberTest {
+    @Test
+    public void persistentIntValue() throws IOException {
+        number.intValue(Integer.MAX_VALUE);
+        initNumber();
+        Assert.assertEquals(Integer.MAX_VALUE, number.intValue());
     }
 
-    public void floatValue( float value ) {
-        doubleValue(value);
-    }
-
-    public void shortValue( short value ) {
-        longValue(value);
-    }
-
-    public void intValue( int value ) {
-        longValue(value);
+    @Test
+    public void setIntValue() {
+        number.intValue(Integer.MAX_VALUE);
+        Assert.assertEquals(Integer.MAX_VALUE, number.intValue());
     }
 }

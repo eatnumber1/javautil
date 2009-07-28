@@ -16,12 +16,12 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
+import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.SimpleChannelProvider;
 import com.eatnumber1.util.io.FileUtils;
 import com.eatnumber1.util.numbers.AbstractMutableNumber;
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
-import java.nio.channels.FileChannel;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -29,52 +29,81 @@ import org.jetbrains.annotations.NotNull;
  * @since Jul 14, 2009
  */
 public abstract class AbstractFileBackedNumber extends AbstractMutableNumber implements FileBackedNumber {
-    @NotNull
-    private RandomAccessFile valueFile;
-
-    @NotNull
-    private FileChannel valueChannel;
-
     protected boolean isClosed;
 
     @NotNull
-    private File file;
+    protected ChannelProvider provider;
+
+    protected AbstractFileBackedNumber( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+        initInternal(file, provider);
+    }
 
     protected AbstractFileBackedNumber( @NotNull File file ) throws IOException {
-        this.file = file;
-        FileUtils.forceCreateNewFile(file);
-        valueFile = new RandomAccessFile(file, isMapped() ? "rw" : "rws");
-        valueChannel = valueFile.getChannel();
+        initInternal(file, new SimpleChannelProvider(file, isMapped() ? "rw" : "rws"));
     }
 
+    private void initInternal( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+        this.provider = provider;
+        if( !file.exists() ) FileUtils.createNewFile(file);
+        init(file);
+        try {
+            getValue();
+        } catch( IOException e ) {
+            setValue(0);
+        }
+    }
+
+    protected void init( @NotNull File file ) throws IOException {
+    }
+
+    @Override
     public void longValue( long value ) {
-        setValue(value);
+        try {
+            setValue(value);
+        } catch( IOException e ) {
+            throw new RuntimeException(e);
+        }
     }
 
+    @Override
     public long longValue() {
-        return getValue().longValue();
+        try {
+            return getValue().longValue();
+        } catch( IOException e ) {
+            throw new RuntimeException(e);
+        }
     }
 
+    @Override
+    public void doubleValue( double value ) {
+        try {
+            setValue(value);
+        } catch( IOException e ) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public double doubleValue() {
+        try {
+            return getValue().doubleValue();
+        } catch( IOException e ) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     public void close() throws IOException {
         if( !isClosed ) {
             isClosed = true;
             flush();
-            valueChannel.close();
-            valueFile.close();
         }
     }
 
+    public abstract int getSize();
+
+    @Override
     public void flush() throws IOException {
-    }
-
-    @NotNull
-    protected FileChannel getValueChannel() {
-        return valueChannel;
-    }
-
-    @NotNull
-    protected File getFile() {
-        return file;
     }
 
     @Override
@@ -86,8 +115,8 @@ public abstract class AbstractFileBackedNumber extends AbstractMutableNumber imp
         }
     }
 
-    protected abstract void setValue( @NotNull Number number );
+    protected abstract void setValue( @NotNull Number number ) throws IOException;
 
     @NotNull
-    protected abstract Number getValue();
+    protected abstract Number getValue() throws IOException;
 }

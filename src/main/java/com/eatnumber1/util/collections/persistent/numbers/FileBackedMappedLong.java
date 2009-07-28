@@ -16,53 +16,40 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.nio.MappedByteBufferUtils;
+import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
 import java.io.File;
 import java.io.IOException;
-import java.nio.MappedByteBuffer;
-import java.nio.channels.FileChannel.MapMode;
+import java.nio.ByteBuffer;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 14, 2009
  */
-public class FileBackedMappedLong extends AbstractFileBackedNumber implements FileBackedLong {
-    public static final long serialVersionUID = FileBackedUnmappedLong.serialVersionUID + 1;
+public class FileBackedMappedLong extends AbstractFileBackedMappedNumber implements FileBackedLong {
     public static final int SIZE = Long.SIZE / 8;
-
-    @NotNull
-    private MappedByteBuffer buf;
 
     public FileBackedMappedLong( @NotNull File file ) throws IOException {
         super(file);
-        buf = getValueChannel().map(MapMode.READ_WRITE, 0, SIZE);
-        setValue(0);
+    }
+
+    public FileBackedMappedLong( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+        super(file, provider);
+    }
+
+    @Override
+    public int getSize() {
+        return SIZE;
     }
 
     @NotNull
-    protected Number getValue() {
-        buf.position(0);
+    @Override
+    protected Number getValue( @NotNull ByteBuffer buf ) {
         return buf.getLong();
     }
 
-    protected void setValue( @NotNull Number number ) {
-        buf.position(0);
-        buf.putLong(number.longValue());
-    }
-
-    public boolean isMapped() {
-        return true;
-    }
-
     @Override
-    public void flush() throws IOException {
-        buf.force();
-        super.flush();
-    }
-
-    @Override
-    public void close() throws IOException {
-        MappedByteBufferUtils.unmap(buf);
+    protected void setValue( @NotNull ByteBuffer buf, @NotNull Number number ) {
+        buf.putLong(0, number.longValue());
     }
 }

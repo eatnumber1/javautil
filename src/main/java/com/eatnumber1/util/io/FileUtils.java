@@ -95,6 +95,10 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
 
     public static void forceCreateNewFile( @NotNull File file ) throws IOException {
         if( file.exists() ) forceDelete(file);
+        createNewFile(file);
+    }
+
+    public static void createNewFile( @NotNull File file ) throws IOException {
         if( !file.createNewFile() ) throw new IOException("Unable to create file.");
     }
 

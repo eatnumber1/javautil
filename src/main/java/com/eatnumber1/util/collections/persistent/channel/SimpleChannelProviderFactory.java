@@ -13,14 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package com.eatnumber1.util.compat;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.eatnumber1.util.collections.persistent.channel;
 
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.SOURCE)
-public @interface Override {
+import java.io.File;
+import java.io.FileNotFoundException;
+import org.jetbrains.annotations.NotNull;
+
+/**
+ * @author Russell Harmon
+ * @since Jul 27, 2009
+ */
+public class SimpleChannelProviderFactory extends AbstractChannelProviderFactory {
+    public SimpleChannelProviderFactory( @NotNull String permissions ) {
+        super(permissions);
+    }
+
+    @NotNull
+    @Override
+    public ChannelProvider create( @NotNull File file ) throws FileNotFoundException {
+        return new SimpleChannelProvider(file, permissions);
+    }
 }

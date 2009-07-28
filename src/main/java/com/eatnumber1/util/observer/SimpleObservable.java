@@ -27,7 +27,7 @@ public class SimpleObservable<T> implements Observable<T> {
     }
 
     public SimpleObservable( @NotNull Set<Observer<T>> observers ) {
-        this(observers, new SimpleObservableNotificationProvider<T>());
+        this(observers, new CopyOnNotifyNotificationProvider<T>());
     }
 
     public SimpleObservable() {

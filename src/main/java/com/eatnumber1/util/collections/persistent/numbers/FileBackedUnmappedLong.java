@@ -16,54 +16,40 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.io.IOUtils;
+import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 14, 2009
  */
-public class FileBackedUnmappedLong extends AbstractFileBackedNumber implements FileBackedLong {
-    public static final long serialVersionUID = 8557433511729460426L;
+public class FileBackedUnmappedLong extends AbstractFileBackedUnmappedNumber implements FileBackedLong {
     public static final int SIZE = Long.SIZE / 8;
 
     public FileBackedUnmappedLong( @NotNull File file ) throws IOException {
         super(file);
-        getValueChannel().force(true);
-        setValue(0);
+    }
+
+    public FileBackedUnmappedLong( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+        super(file, provider);
+    }
+
+    @Override
+    public int getSize() {
+        return SIZE;
     }
 
     @NotNull
-    protected Number getValue() {
-        FileChannel channel = getValueChannel();
-        ByteBuffer buf = ByteBuffer.allocate(SIZE);
-        try {
-            channel.position(0);
-            IOUtils.read(channel, buf, SIZE);
-            return buf.getLong();
-        } catch( IOException e ) {
-            throw new RuntimeException(e);
-        }
+    @Override
+    protected Number getValue( @NotNull ByteBuffer buf ) {
+        return buf.getLong();
     }
 
-    protected void setValue( @NotNull Number number ) {
-        FileChannel channel = getValueChannel();
-        ByteBuffer buf = ByteBuffer.allocate(SIZE);
+    @Override
+    protected void setValue( @NotNull ByteBuffer buf, @NotNull Number number ) {
         buf.putLong(number.longValue());
-        buf.position(0);
-        try {
-            channel.position(0);
-            IOUtils.write(channel, buf, SIZE);
-        } catch( IOException e ) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    public boolean isMapped() {
-        return false;
     }
 }

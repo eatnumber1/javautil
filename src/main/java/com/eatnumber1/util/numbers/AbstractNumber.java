@@ -51,9 +51,4 @@ public abstract class AbstractNumber implements Number {
         Number num = (Number) obj;
         return num.longValue() == longValue();
     }
-
-    @Override
-    public String toString() {
-        return super.toString();
-    }
 }

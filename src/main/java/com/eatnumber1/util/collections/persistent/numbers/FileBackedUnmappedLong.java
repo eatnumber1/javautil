@@ -52,4 +52,9 @@ public class FileBackedUnmappedLong extends AbstractFileBackedUnmappedNumber imp
     protected void setValue( @NotNull ByteBuffer buf, @NotNull Number number ) {
         buf.putLong(number.longValue());
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(longValue());
+    }
 }

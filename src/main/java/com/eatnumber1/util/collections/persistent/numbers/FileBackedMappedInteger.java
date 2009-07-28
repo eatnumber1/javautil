@@ -52,4 +52,9 @@ public class FileBackedMappedInteger extends AbstractFileBackedMappedNumber impl
     protected void setValue( @NotNull ByteBuffer buf, @NotNull Number number ) {
         buf.putInt(0, number.intValue());
     }
+
+    @Override
+    public String toString() {
+        return String.valueOf(intValue());
+    }
 }

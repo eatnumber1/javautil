@@ -16,7 +16,6 @@
 
 package com.eatnumber1.util.cglib;
 
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.lock.SynchronizedLockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.lang.reflect.Method;

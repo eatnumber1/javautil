@@ -88,9 +88,13 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         return file.list().length == 0;
     }
 
-    public static void forceMkdir( @NotNull File file ) throws IOException {
-        if( file.exists() ) forceDelete(file);
-        if( !file.mkdir() ) throw new IOException("Unable to create directory.");
+    public static void forceMkdir( @NotNull File directory ) throws IOException {
+        if( directory.exists() ) forceDelete(directory);
+        mkdir(directory);
+    }
+
+    public static void mkdir( @NotNull File directory ) throws IOException {
+        if( !directory.mkdir() ) throw new IOException("Unable to create directory.");
     }
 
     public static void forceCreateNewFile( @NotNull File file ) throws IOException {

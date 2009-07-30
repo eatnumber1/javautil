@@ -17,21 +17,14 @@
 package com.eatnumber1.util.collections.persistent.channel;
 
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public class ReopeningChannelProviderFactory extends AbstractChannelProviderFactory {
-    public ReopeningChannelProviderFactory( @NotNull String permissions ) {
-        super(permissions);
-    }
-
+public interface FileChannelProviderFactory {
     @NotNull
-    @Override
-    public ChannelProvider create( @NotNull File file ) throws FileNotFoundException {
-        return new ReopeningChannelProvider(file, permissions);
-    }
+    FileChannelProvider create( @NotNull File file ) throws IOException;
 }

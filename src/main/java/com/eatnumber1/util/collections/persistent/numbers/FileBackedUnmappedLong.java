@@ -16,7 +16,7 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelProvider;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -33,7 +33,7 @@ public class FileBackedUnmappedLong extends AbstractFileBackedUnmappedNumber imp
         super(file);
     }
 
-    public FileBackedUnmappedLong( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+    public FileBackedUnmappedLong( @NotNull File file, @NotNull FileChannelProvider provider ) throws IOException {
         super(file, provider);
     }
 

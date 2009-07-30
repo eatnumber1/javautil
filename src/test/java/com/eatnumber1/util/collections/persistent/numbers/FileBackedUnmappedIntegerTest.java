@@ -16,7 +16,7 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.collections.persistent.channel.ReopeningChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.ReopeningFileChannelProvider;
 import java.io.File;
 import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
@@ -29,6 +29,6 @@ public class FileBackedUnmappedIntegerTest extends AbstractFileBackedIntegerTest
     @NotNull
     @Override
     protected FileBackedNumber newNumber( @NotNull File file ) throws IOException {
-        return new FileBackedUnmappedInteger(file, new ReopeningChannelProvider(file, "rw"));
+        return new FileBackedUnmappedInteger(file, new ReopeningFileChannelProvider(file, "rw"));
     }
 }

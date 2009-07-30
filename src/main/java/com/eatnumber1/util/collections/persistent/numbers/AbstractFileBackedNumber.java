@@ -16,8 +16,8 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
-import com.eatnumber1.util.collections.persistent.channel.SimpleChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.SimpleFileChannelProvider;
 import com.eatnumber1.util.io.FileUtils;
 import com.eatnumber1.util.numbers.AbstractMutableNumber;
 import java.io.File;
@@ -29,23 +29,27 @@ import org.jetbrains.annotations.NotNull;
  * @since Jul 14, 2009
  */
 public abstract class AbstractFileBackedNumber extends AbstractMutableNumber implements FileBackedNumber {
-    protected boolean isClosed;
+    protected boolean closed = true;
 
     @NotNull
-    protected ChannelProvider provider;
+    protected FileChannelProvider provider;
 
-    protected AbstractFileBackedNumber( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+    @NotNull
+    protected File file;
+
+    protected AbstractFileBackedNumber( @NotNull File file, @NotNull FileChannelProvider provider ) throws IOException {
         initInternal(file, provider);
     }
 
     protected AbstractFileBackedNumber( @NotNull File file ) throws IOException {
-        initInternal(file, new SimpleChannelProvider(file, isMapped() ? "rw" : "rws"));
+        initInternal(file, new SimpleFileChannelProvider(file, isMapped() ? "rw" : "rws"));
     }
 
-    private void initInternal( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+    private void initInternal( @NotNull File file, @NotNull FileChannelProvider provider ) throws IOException {
         this.provider = provider;
+        this.file = file;
         if( !file.exists() ) FileUtils.createNewFile(file);
-        init(file);
+        openInternal(file);
         try {
             getValue();
         } catch( IOException e ) {
@@ -53,7 +57,20 @@ public abstract class AbstractFileBackedNumber extends AbstractMutableNumber imp
         }
     }
 
-    protected void init( @NotNull File file ) throws IOException {
+    protected void openInternal( @NotNull File file ) throws IOException {
+        provider.open();
+    }
+
+    protected void closeInternal() throws IOException {
+        provider.close();
+    }
+
+    @Override
+    public void open() throws IOException {
+        if( closed ) {
+            initInternal(file, provider);
+            closed = false;
+        }
     }
 
     @Override
@@ -63,6 +80,15 @@ public abstract class AbstractFileBackedNumber extends AbstractMutableNumber imp
         } catch( IOException e ) {
             throw new RuntimeException(e);
         }
+    }
+
+    protected void flushInternal() throws IOException {
+        provider.flush();
+    }
+
+    @Override
+    public void flush() throws IOException {
+        if( !closed ) flushInternal();
     }
 
     @Override
@@ -94,18 +120,15 @@ public abstract class AbstractFileBackedNumber extends AbstractMutableNumber imp
 
     @Override
     public void close() throws IOException {
-        if( !isClosed ) {
-            isClosed = true;
+        if( !closed ) {
+            closed = true;
             flush();
+            closeInternal();
             provider.close();
         }
     }
 
     public abstract int getSize();
-
-    @Override
-    public void flush() throws IOException {
-    }
 
     @Override
     protected void finalize() throws Throwable {

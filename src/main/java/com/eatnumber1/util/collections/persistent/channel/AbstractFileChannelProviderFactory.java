@@ -16,22 +16,17 @@
 
 package com.eatnumber1.util.collections.persistent.channel;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public class SimpleChannelProviderFactory extends AbstractChannelProviderFactory {
-    public SimpleChannelProviderFactory( @NotNull String permissions ) {
-        super(permissions);
-    }
-
+public abstract class AbstractFileChannelProviderFactory implements FileChannelProviderFactory {
     @NotNull
-    @Override
-    public ChannelProvider create( @NotNull File file ) throws FileNotFoundException {
-        return new SimpleChannelProvider(file, permissions);
+    protected String permissions;
+
+    public AbstractFileChannelProviderFactory( @NotNull String permissions ) {
+        this.permissions = permissions;
     }
 }

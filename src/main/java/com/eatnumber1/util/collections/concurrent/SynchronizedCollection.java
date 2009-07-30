@@ -16,10 +16,13 @@
 
 package com.eatnumber1.util.collections.concurrent;
 
+import com.eatnumber1.util.collections.concurrent.iterators.SynchronizedIterator;
 import com.eatnumber1.util.concurrent.lock.ReadWriteLockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.util.Collection;
+import java.util.Iterator;
 import net.jcip.annotations.ThreadSafe;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
@@ -27,4 +30,6 @@ import net.jcip.annotations.ThreadSafe;
  */
 @ThreadSafe
 public interface SynchronizedCollection<T, D extends Collection<T>> extends Collection<T>, ReadWriteLockProvider, Facade<D> {
+    @NotNull
+    SynchronizedIterator<T, Iterator<T>> synchronizedIterator();
 }

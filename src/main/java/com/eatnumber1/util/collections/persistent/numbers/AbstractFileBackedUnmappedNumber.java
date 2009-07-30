@@ -16,8 +16,8 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
-import com.eatnumber1.util.collections.persistent.channel.ChannelVisitor;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelVisitor;
 import com.eatnumber1.util.io.IOUtils;
 import java.io.File;
 import java.io.IOException;
@@ -34,7 +34,7 @@ public abstract class AbstractFileBackedUnmappedNumber extends AbstractFileBacke
         super(file);
     }
 
-    protected AbstractFileBackedUnmappedNumber( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+    protected AbstractFileBackedUnmappedNumber( @NotNull File file, @NotNull FileChannelProvider provider ) throws IOException {
         super(file, provider);
     }
 
@@ -44,7 +44,7 @@ public abstract class AbstractFileBackedUnmappedNumber extends AbstractFileBacke
 
     @NotNull
     protected Number getValue() throws IOException {
-        return provider.visitValueChannel(new ChannelVisitor<Number>() {
+        return provider.visitValueChannel(new FileChannelVisitor<Number>() {
             @Override
             public Number visit( @NotNull FileChannel channel ) throws IOException {
                 ByteBuffer buf = ByteBuffer.allocate(getSize());
@@ -62,7 +62,7 @@ public abstract class AbstractFileBackedUnmappedNumber extends AbstractFileBacke
     protected abstract void setValue( @NotNull ByteBuffer buf, @NotNull Number number );
 
     protected void setValue( @NotNull final Number number ) throws IOException {
-        provider.visitValueChannel(new ChannelVisitor<Void>() {
+        provider.visitValueChannel(new FileChannelVisitor<Void>() {
             @Override
             public Void visit( @NotNull FileChannel channel ) throws IOException {
                 ByteBuffer buf = ByteBuffer.allocate(getSize());

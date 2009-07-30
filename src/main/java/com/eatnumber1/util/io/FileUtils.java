@@ -88,6 +88,10 @@ public class FileUtils extends org.apache.commons.io.FileUtils {
         return file.list().length == 0;
     }
 
+    public static void setLastModified( @NotNull File file, long time ) throws IOException {
+        if( !file.setLastModified(time) ) throw new IOException("Unable to set last modified time");
+    }
+
     public static void forceMkdir( @NotNull File directory ) throws IOException {
         if( directory.exists() ) forceDelete(directory);
         mkdir(directory);

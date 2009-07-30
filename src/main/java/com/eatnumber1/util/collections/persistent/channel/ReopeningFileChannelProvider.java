@@ -17,31 +17,21 @@
 package com.eatnumber1.util.collections.persistent.channel;
 
 import java.io.File;
+import java.io.IOException;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public abstract class AbstractChannelProvider implements ChannelProvider {
-    @NotNull
-    private File file;
-
-    @NotNull
-    private String permissions;
-
-    protected AbstractChannelProvider( @NotNull File file, @NotNull String permissions ) {
-        this.file = file;
-        this.permissions = permissions;
+public class ReopeningFileChannelProvider extends SimpleFileChannelProvider {
+    public ReopeningFileChannelProvider( @NotNull File file, @NotNull String permissions ) throws IOException {
+        super(file, permissions);
     }
 
-    @NotNull
-    protected File getFile() {
-        return file;
-    }
-
-    @NotNull
-    public String getPermissions() {
-        return permissions;
+    @Override
+    public <T> T visitValueChannel( @NotNull FileChannelVisitor<T> visitor ) throws IOException {
+        if( closed ) open();
+        return super.visitValueChannel(visitor);
     }
 }

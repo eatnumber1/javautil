@@ -16,8 +16,8 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
-import com.eatnumber1.util.collections.persistent.channel.ChannelVisitor;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelVisitor;
 import com.eatnumber1.util.nio.MappedByteBufferUtils;
 import java.io.File;
 import java.io.IOException;
@@ -39,14 +39,14 @@ public abstract class AbstractFileBackedMappedNumber extends AbstractFileBackedN
         super(file);
     }
 
-    protected AbstractFileBackedMappedNumber( @NotNull File file, @NotNull ChannelProvider provider ) throws IOException {
+    protected AbstractFileBackedMappedNumber( @NotNull File file, @NotNull FileChannelProvider provider ) throws IOException {
         super(file, provider);
     }
 
     @Override
-    protected void init( @NotNull File file ) throws IOException {
-        super.init(file);
-        provider.visitValueChannel(new ChannelVisitor<Void>() {
+    protected void openInternal( @NotNull File file ) throws IOException {
+        super.openInternal(file);
+        provider.visitValueChannel(new FileChannelVisitor<Void>() {
             @Override
             public Void visit( @NotNull FileChannel channel ) throws IOException {
                 buf = channel.map(MapMode.READ_WRITE, 0, getSize());
@@ -61,14 +61,15 @@ public abstract class AbstractFileBackedMappedNumber extends AbstractFileBackedN
     }
 
     @Override
-    public void flush() throws IOException {
+    public void flushInternal() throws IOException {
         buf.force();
-        super.flush();
+        super.flushInternal();
     }
 
     @Override
-    public void close() throws IOException {
+    public void closeInternal() throws IOException {
         MappedByteBufferUtils.unmap(buf);
+        super.closeInternal();
     }
 
     @Override

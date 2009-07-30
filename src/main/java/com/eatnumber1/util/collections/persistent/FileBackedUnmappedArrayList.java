@@ -16,10 +16,10 @@
 
 package com.eatnumber1.util.collections.persistent;
 
-import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
-import com.eatnumber1.util.collections.persistent.channel.ChannelProviderFactory;
-import com.eatnumber1.util.collections.persistent.channel.ChannelVisitor;
-import com.eatnumber1.util.collections.persistent.channel.SimpleChannelProviderFactory;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelProviderFactory;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelVisitor;
+import com.eatnumber1.util.collections.persistent.channel.SimpleFileChannelProvider;
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedInteger;
 import com.eatnumber1.util.collections.persistent.numbers.FileBackedUnmappedInteger;
 import com.eatnumber1.util.collections.persistent.provider.PersistenceProvider;
@@ -48,10 +48,9 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
     protected static final int POINTER_SIZE = Long.SIZE / 8;
     protected static final int OBJECT_LENGTH_SIZE = Integer.SIZE / 8;
     protected static final int ELEMENT_SIZE = POINTER_SIZE + OBJECT_LENGTH_SIZE;
-    protected static final int LIST_START_POS = 0;
 
     @NotNull
-    protected ChannelProvider elementChannel, dataChannel;
+    protected FileChannelProvider elementChannel, dataChannel;
 
     @NotNull
     protected FileBackedInteger size;
@@ -62,11 +61,17 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
     @NotNull
     protected PersistenceProvider<T> persistenceProvider;
 
+    @NotNull
+    private FileChannelProviderFactory factory;
+
     protected long nextFree;
 
     protected long listTruncateSize, dataTruncateSize;
 
-    protected boolean closed;
+    protected boolean closed = true;
+
+    @NotNull
+    private File directory;
 
     protected abstract class Element {
         protected long start;
@@ -115,47 +120,63 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
     }
 
     public FileBackedUnmappedArrayList( @NotNull File file, @NotNull PersistenceProvider<T> persistenceProvider ) throws IOException {
-        this(file, persistenceProvider, new SimpleChannelProviderFactory("rw"));
+        this(file, persistenceProvider, new FileChannelProviderFactory() {
+            @NotNull
+            @Override
+            public FileChannelProvider create( @NotNull File file ) throws IOException {
+                return new SimpleFileChannelProvider(file, "rw");
+            }
+        });
     }
 
-    public FileBackedUnmappedArrayList( @NotNull File file, @NotNull PersistenceProvider<T> persistenceProvider, @NotNull ChannelProviderFactory channelProviderFactory ) throws IOException {
+    public FileBackedUnmappedArrayList( @NotNull File directory, @NotNull PersistenceProvider<T> persistenceProvider, @NotNull FileChannelProviderFactory factory ) throws IOException {
         this.persistenceProvider = persistenceProvider;
-        if( file.exists() ) {
-            if( !file.isDirectory() ) throw new IOException(file + " is not a directory.");
-        } else {
-            if( !file.mkdir() ) throw new IOException("Unable to create container directory.");
-        }
-        File listFile = new File(file, LIST_FILENAME), dataFile = new File(file, DATA_FILENAME);
-        boolean listFileExists = listFile.exists(), dataFileExists = dataFile.exists();
-        if( listFileExists || dataFileExists ) {
-            if( !listFileExists ) throw new IOException("List file is missing. The list is corrupt.");
-            if( !dataFileExists ) throw new IOException("Data file is missing. The list is corrupt.");
-        } else {
-            FileUtils.createNewFile(listFile);
-            FileUtils.createNewFile(dataFile);
-        }
-        listTruncateSize = dataTruncateSize = 0;
-        elementChannel = channelProviderFactory.create(listFile);
-        dataChannel = channelProviderFactory.create(dataFile);
-        File sizeFile = new File(file, SIZE_FILENAME);
-        size = newSizeInteger(sizeFile, channelProviderFactory.create(sizeFile));
-        int size = size();
-        if( size != 0 && listFileExists && dataFileExists ) {
-            Element last = newElement(size - 1);
-            nextFree = last.start + last.size;
-        } else {
-            nextFree = 0;
+        this.factory = factory;
+        this.directory = directory;
+        open();
+    }
+
+    @Override
+    public void open() throws IOException {
+        if( closed ) {
+            if( directory.exists() ) {
+                if( !directory.isDirectory() ) throw new IOException(directory + " is not a directory.");
+            } else {
+                FileUtils.mkdir(directory);
+            }
+            File listFile = new File(directory, LIST_FILENAME), dataFile = new File(directory, DATA_FILENAME);
+            boolean listFileExists = listFile.exists(), dataFileExists = dataFile.exists();
+            if( listFileExists || dataFileExists ) {
+                if( !listFileExists ) throw new IOException("List file is missing. The list is corrupt.");
+                if( !dataFileExists ) throw new IOException("Data file is missing. The list is corrupt.");
+            } else {
+                FileUtils.createNewFile(listFile);
+                FileUtils.createNewFile(dataFile);
+            }
+            listTruncateSize = dataTruncateSize = 0;
+            elementChannel = factory.create(listFile);
+            dataChannel = factory.create(dataFile);
+            File sizeFile = new File(directory, SIZE_FILENAME);
+            size = newSizeInteger(sizeFile, factory.create(sizeFile));
+            int size = size();
+            if( size != 0 && listFileExists && dataFileExists ) {
+                Element last = newElement(size - 1);
+                nextFree = last.start + last.size;
+            } else {
+                nextFree = 0;
+            }
+            closed = false;
         }
     }
 
     @NotNull
-    protected FileBackedInteger newSizeInteger( @NotNull File sizeFile, @NotNull ChannelProvider channelProvider ) throws IOException {
+    protected FileBackedInteger newSizeInteger( @NotNull File sizeFile, @NotNull FileChannelProvider channelProvider ) throws IOException {
         return new FileBackedUnmappedInteger(sizeFile, channelProvider);
     }
 
     protected void truncate() throws IOException {
         if( listTruncateSize > 0 ) {
-            elementChannel.visitValueChannel(new ChannelVisitor<Void>() {
+            elementChannel.visitValueChannel(new FileChannelVisitor<Void>() {
                 @Override
                 public Void visit( @NotNull FileChannel channel ) throws IOException {
                     try {
@@ -169,7 +190,7 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
             });
         }
         if( dataTruncateSize > 0 ) {
-            dataChannel.visitValueChannel(new ChannelVisitor<Void>() {
+            dataChannel.visitValueChannel(new FileChannelVisitor<Void>() {
                 @Override
                 public Void visit( @NotNull FileChannel channel ) throws IOException {
                     channel.truncate(channel.size() - dataTruncateSize);
@@ -186,11 +207,11 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
 
     public void close() throws IOException {
         if( !closed ) {
-            closed = true;
             flush();
             size.close();
             elementChannel.close();
             dataChannel.close();
+            closed = true;
         }
     }
 
@@ -209,11 +230,11 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
     }
 
     protected int getElementOffset( int index ) {
-        return LIST_START_POS + index * ELEMENT_SIZE;
+        return index * ELEMENT_SIZE;
     }
 
-    private void readData( @NotNull final ByteBuffer dst, @NotNull ChannelProvider channel, final long start ) throws IOException {
-        channel.visitValueChannel(new ChannelVisitor<Void>() {
+    private void readData( @NotNull final ByteBuffer dst, @NotNull FileChannelProvider channel, final long start ) throws IOException {
+        channel.visitValueChannel(new FileChannelVisitor<Void>() {
             @Override
             public Void visit( @NotNull FileChannel channel ) throws IOException {
                 int bytesRead = channel.position(start).read(dst);
@@ -227,8 +248,8 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         });
     }
 
-    private void writeData( @NotNull final ByteBuffer src, @NotNull ChannelProvider channel, final long start ) throws IOException {
-        channel.visitValueChannel(new ChannelVisitor<Void>() {
+    private void writeData( @NotNull final ByteBuffer src, @NotNull FileChannelProvider channel, final long start ) throws IOException {
+        channel.visitValueChannel(new FileChannelVisitor<Void>() {
             @Override
             public Void visit( @NotNull FileChannel channel ) throws IOException {
                 int bytesWritten = channel.position(start).write(src);
@@ -407,7 +428,7 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
         listTruncateSize += ELEMENT_SIZE * size();
         setSize(0);
         try {
-            dataTruncateSize += dataChannel.visitValueChannel(new ChannelVisitor<Long>() {
+            dataTruncateSize += dataChannel.visitValueChannel(new FileChannelVisitor<Long>() {
                 @Override
                 public Long visit( @NotNull FileChannel channel ) throws IOException {
                     return channel.size();
@@ -418,5 +439,11 @@ public class FileBackedUnmappedArrayList<T> extends AbstractList<T> implements F
             throw new RuntimeException(e);
         }
         nextFree = 0;
+    }
+
+    @NotNull
+    @Override
+    public File getStorageFile() {
+        return directory;
     }
 }

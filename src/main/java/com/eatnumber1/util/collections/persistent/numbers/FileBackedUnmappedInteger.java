@@ -16,7 +16,7 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
-import com.eatnumber1.util.collections.persistent.channel.ChannelProvider;
+import com.eatnumber1.util.collections.persistent.channel.FileChannelProvider;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -33,7 +33,7 @@ public class FileBackedUnmappedInteger extends AbstractFileBackedUnmappedNumber 
         super(file);
     }
 
-    public FileBackedUnmappedInteger( @NotNull File file, @NotNull ChannelProvider channelProvider ) throws IOException {
+    public FileBackedUnmappedInteger( @NotNull File file, @NotNull FileChannelProvider channelProvider ) throws IOException {
         super(file, channelProvider);
     }
 

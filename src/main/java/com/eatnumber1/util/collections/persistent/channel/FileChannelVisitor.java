@@ -16,14 +16,14 @@
 
 package com.eatnumber1.util.collections.persistent.channel;
 
-import java.io.Closeable;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public interface ChannelProvider extends Closeable {
-    <T> T visitValueChannel( @NotNull ChannelVisitor<T> visitor ) throws IOException;
+public interface FileChannelVisitor<T> {
+    T visit( @NotNull FileChannel channel ) throws IOException;
 }

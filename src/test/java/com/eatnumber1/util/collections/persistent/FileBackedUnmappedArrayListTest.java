@@ -41,4 +41,12 @@ public class FileBackedUnmappedArrayListTest extends AbstractTestList {
             throw new RuntimeException(e);
         }
     }
+
+    public void testCloseThenOpen() throws IOException {
+        resetFull();
+        FileBackedUnmappedArrayList list = (FileBackedUnmappedArrayList) collection;
+        list.close();
+        list.open();
+        verify();
+    }
 }

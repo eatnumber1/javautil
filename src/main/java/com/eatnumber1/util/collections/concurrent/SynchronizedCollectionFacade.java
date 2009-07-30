@@ -17,7 +17,6 @@
 package com.eatnumber1.util.collections.concurrent;
 
 import com.eatnumber1.util.collections.concurrent.iterators.SynchronizedIterator;
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.facade.SynchronizedReadWriteFacade;
 import java.util.Collection;
 import java.util.Iterator;
@@ -79,7 +78,7 @@ public class SynchronizedCollectionFacade<T, D extends Collection<T>> extends Sy
 
     @Override
     public Iterator<T> iterator() {
-        return new SynchronizedIterator<T, Iterator<T>>(getDelegate().iterator(), getReadWriteLock());
+        return synchronizedIterator();
     }
 
     @Override
@@ -180,5 +179,11 @@ public class SynchronizedCollectionFacade<T, D extends Collection<T>> extends Sy
         } finally {
             writeLock.unlock();
         }
+    }
+
+    @NotNull
+    @Override
+    public SynchronizedIterator<T, Iterator<T>> synchronizedIterator() {
+        return new SynchronizedIterator<T, Iterator<T>>(getDelegate().iterator(), getReadWriteLock());
     }
 }

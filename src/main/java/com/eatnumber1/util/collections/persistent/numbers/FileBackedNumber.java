@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.collections.persistent.numbers;
 
+import com.eatnumber1.util.io.Openable;
 import com.eatnumber1.util.numbers.MutableNumber;
 import java.io.Closeable;
 import java.io.Flushable;
@@ -24,6 +25,6 @@ import java.io.Flushable;
  * @author Russell Harmon
  * @since Jul 14, 2009
  */
-public interface FileBackedNumber extends MutableNumber, Flushable, Closeable {
+public interface FileBackedNumber extends MutableNumber, Flushable, Closeable, Openable {
     public boolean isMapped();
 }

@@ -16,13 +16,19 @@
 
 package com.eatnumber1.util.collections.persistent;
 
+import com.eatnumber1.util.io.Openable;
 import java.io.Closeable;
+import java.io.File;
 import java.io.Flushable;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 13, 2007
  */
-public interface FileBackedCollection<T> extends PersistentCollection<T>, Flushable, Closeable {
+public interface FileBackedCollection<T> extends PersistentCollection<T>, Flushable, Closeable, Openable {
     public boolean isMapped();
+
+    @NotNull
+    File getStorageFile();
 }

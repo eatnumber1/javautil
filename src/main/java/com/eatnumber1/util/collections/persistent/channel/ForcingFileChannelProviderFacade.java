@@ -16,46 +16,53 @@
 
 package com.eatnumber1.util.collections.persistent.channel;
 
+import com.eatnumber1.util.facade.SimpleFacade;
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
-import java.util.concurrent.locks.Lock;
-import java.util.concurrent.locks.ReentrantLock;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public class ReopeningChannelProvider extends AbstractChannelProvider {
-    @NotNull
-    private Lock lock = new ReentrantLock();
+public class ForcingFileChannelProviderFacade extends SimpleFacade<FileChannelProvider> implements FileChannelProvider {
+    public ForcingFileChannelProviderFacade() {
+    }
 
-    public ReopeningChannelProvider( @NotNull File file, @NotNull String permissions ) {
-        super(file, permissions);
+    public ForcingFileChannelProviderFacade( FileChannelProvider delegate ) {
+        super(delegate);
     }
 
     @Override
-    public <T> T visitValueChannel( @NotNull ChannelVisitor<T> visitor ) throws IOException {
-        lock.lock();
-        try {
-            RandomAccessFile valueFile = null;
-            FileChannel channel = null;
-            try {
-                valueFile = new RandomAccessFile(getFile(), getPermissions());
-                channel = valueFile.getChannel();
+    public <T> T visitValueChannel( @NotNull final FileChannelVisitor<T> visitor ) throws IOException {
+        return getDelegate().visitValueChannel(new FileChannelVisitor<T>() {
+            @Override
+            public T visit( @NotNull FileChannel channel ) throws IOException {
+                channel.force(true);
                 return visitor.visit(channel);
-            } finally {
-                if( channel != null ) channel.close();
-                if( valueFile != null ) valueFile.close();
             }
-        } finally {
-            lock.unlock();
-        }
+        });
     }
 
     @Override
     public void close() throws IOException {
+        getDelegate().close();
+    }
+
+    @NotNull
+    @Override
+    public File getFile() {
+        return getDelegate().getFile();
+    }
+
+    @Override
+    public void open() throws IOException {
+        getDelegate().open();
+    }
+
+    @Override
+    public void flush() throws IOException {
+        getDelegate().flush();
     }
 }

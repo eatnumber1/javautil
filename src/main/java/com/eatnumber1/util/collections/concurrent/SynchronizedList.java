@@ -16,8 +16,11 @@
 
 package com.eatnumber1.util.collections.concurrent;
 
+import com.eatnumber1.util.collections.concurrent.iterators.SynchronizedListIterator;
 import java.util.List;
+import java.util.ListIterator;
 import net.jcip.annotations.ThreadSafe;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Russell Harmon
@@ -25,4 +28,6 @@ import net.jcip.annotations.ThreadSafe;
  */
 @ThreadSafe
 public interface SynchronizedList<T, D extends List<T>> extends SynchronizedCollection<T, D>, List<T> {
+    @NotNull
+    SynchronizedListIterator<T, ListIterator<T>> synchronizedListIterator( int index );
 }

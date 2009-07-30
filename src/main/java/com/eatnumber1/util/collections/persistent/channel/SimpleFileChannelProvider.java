@@ -17,7 +17,6 @@
 package com.eatnumber1.util.collections.persistent.channel;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.nio.channels.FileChannel;
@@ -27,36 +26,36 @@ import org.jetbrains.annotations.NotNull;
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public class SimpleChannelProvider extends AbstractChannelProvider {
+public class SimpleFileChannelProvider extends AbstractFileChannelProvider {
     @NotNull
     private RandomAccessFile file;
 
     @NotNull
     private FileChannel channel;
 
-    public SimpleChannelProvider( @NotNull File file, @NotNull String permissions ) throws FileNotFoundException {
+    public SimpleFileChannelProvider( @NotNull File file, @NotNull String permissions ) throws IOException {
         super(file, permissions);
-        this.file = new RandomAccessFile(file, permissions);
-        channel = this.file.getChannel();
     }
 
     @Override
-    public <T> T visitValueChannel( @NotNull ChannelVisitor<T> visitor ) throws IOException {
+    protected <T> T visitValueChannelInternal( @NotNull FileChannelVisitor<T> visitor ) throws IOException {
         return visitor.visit(channel);
     }
 
     @Override
-    public void close() throws IOException {
-        channel.close();
-        file.close();
+    protected void flushInternal() throws IOException {
+        file.getFD().sync();
     }
 
     @Override
-    protected void finalize() throws Throwable {
-        try {
-            close();
-        } finally {
-            super.finalize();
-        }
+    protected void openInternal() throws IOException {
+        this.file = new RandomAccessFile(getFile(), getPermissions());
+        channel = this.file.getChannel();
+    }
+
+    @Override
+    protected void closeInternal() throws IOException {
+        channel.close();
+        file.close();
     }
 }

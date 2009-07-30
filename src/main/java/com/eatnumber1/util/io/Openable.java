@@ -14,19 +14,14 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.collections.persistent.channel;
+package com.eatnumber1.util.io;
 
-import org.jetbrains.annotations.NotNull;
+import java.io.IOException;
 
 /**
  * @author Russell Harmon
- * @since Jul 27, 2009
+ * @since Jul 30, 2009
  */
-public abstract class AbstractChannelProviderFactory implements ChannelProviderFactory {
-    @NotNull
-    protected String permissions;
-
-    public AbstractChannelProviderFactory( @NotNull String permissions ) {
-        this.permissions = permissions;
-    }
+public interface Openable {
+    void open() throws IOException;
 }

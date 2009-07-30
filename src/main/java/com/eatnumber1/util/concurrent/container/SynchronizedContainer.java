@@ -46,15 +46,13 @@ public class SynchronizedContainer<V> extends SynchronizedFacade<V> implements C
         Lock lock = getLock();
         lock.lock();
         try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
-            throw e;
-        } catch( ContainerException e ) {
-            throw e;
-        } catch( Exception e ) {
-            throw new ContainerException(e);
+            return doActionInternal(action);
         } finally {
             lock.unlock();
         }
+    }
+
+    protected <T> T doActionInternal( @NotNull ContainerAction<V, T> action ) throws ContainerException {
+        return action.doAction(getDelegate());
     }
 }

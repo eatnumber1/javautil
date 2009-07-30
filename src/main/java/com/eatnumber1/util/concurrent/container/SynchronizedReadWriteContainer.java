@@ -47,20 +47,18 @@ public class SynchronizedReadWriteContainer<D> extends SynchronizedReadWriteFaca
     }
 
     @Override
-    public <T> T doAction( @NotNull ContainerAction<D, T> action ) throws ContainerException {
+    public final <T> T doAction( @NotNull ContainerAction<D, T> action ) throws ContainerException {
         Lock lock = getLock();
         lock.lock();
         try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
-            throw e;
-        } catch( ContainerException e ) {
-            throw e;
-        } catch( Exception e ) {
-            throw new ContainerException(e);
+            return doActionInternal(action);
         } finally {
             lock.unlock();
         }
+    }
+
+    protected <T> T doActionInternal( @NotNull ContainerAction<D, T> action ) throws ContainerException {
+        return action.doAction(getDelegate());
     }
 
     @Override
@@ -68,16 +66,14 @@ public class SynchronizedReadWriteContainer<D> extends SynchronizedReadWriteFaca
         Lock lock = getReadLock();
         lock.lock();
         try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
-            throw e;
-        } catch( ContainerException e ) {
-            throw e;
-        } catch( Exception e ) {
-            throw new ContainerException(e);
+            return doReadActionInternal(action);
         } finally {
             lock.unlock();
         }
+    }
+
+    protected <T> T doReadActionInternal( @NotNull ContainerAction<D, T> action ) throws ContainerException {
+        return action.doAction(getDelegate());
     }
 
     @Override
@@ -85,15 +81,13 @@ public class SynchronizedReadWriteContainer<D> extends SynchronizedReadWriteFaca
         Lock lock = getWriteLock();
         lock.lock();
         try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
-            throw e;
-        } catch( ContainerException e ) {
-            throw e;
-        } catch( Exception e ) {
-            throw new ContainerException(e);
+            return doWriteActionInternal(action);
         } finally {
             lock.unlock();
         }
+    }
+
+    protected <T> T doWriteActionInternal( @NotNull ContainerAction<D, T> action ) throws ContainerException {
+        return action.doAction(getDelegate());
     }
 }

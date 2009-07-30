@@ -33,14 +33,6 @@ public class SimpleContainer<V> extends SimpleFacade<V> implements Container<V> 
 
     @Override
     public <T> T doAction( @NotNull ContainerAction<V, T> action ) throws ContainerException {
-        try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
-            throw e;
-        } catch( ContainerException e ) {
-            throw e;
-        } catch( Exception e ) {
-            throw new ContainerException(e);
-        }
+        return action.doAction(getDelegate());
     }
 }

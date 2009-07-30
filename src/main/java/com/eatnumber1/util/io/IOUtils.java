@@ -16,6 +16,7 @@
 
 package com.eatnumber1.util.io;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
@@ -36,5 +37,13 @@ public class IOUtils extends org.apache.commons.io.IOUtils {
 
     public static void read( @NotNull ReadableByteChannel channel, @NotNull ByteBuffer dst, int expected ) throws IOException {
         if( channel.read(dst) != expected ) throw new IOException("Did not read expected amount of data");
+    }
+
+    public static void closeQuietly( @NotNull Closeable closeable ) {
+        try {
+            closeable.close();
+        } catch( IOException e ) {
+            // Ignore
+        }
     }
 }

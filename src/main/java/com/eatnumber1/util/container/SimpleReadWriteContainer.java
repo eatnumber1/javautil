@@ -32,27 +32,11 @@ public class SimpleReadWriteContainer<V> extends SimpleContainer<V> implements R
 
     @Override
     public <T> T doReadAction( @NotNull ContainerAction<V, T> action ) throws ContainerException {
-        try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
-            throw e;
-        } catch( ContainerException e ) {
-            throw e;
-        } catch( Exception e ) {
-            throw new ContainerException(e);
-        }
+        return action.doAction(getDelegate());
     }
 
     @Override
     public <T> T doWriteAction( @NotNull ContainerAction<V, T> action ) throws ContainerException {
-        try {
-            return action.doAction(getDelegate());
-        } catch( RuntimeException e ) {
-            throw e;
-        } catch( ContainerException e ) {
-            throw e;
-        } catch( Exception e ) {
-            throw new ContainerException(e);
-        }
+        return action.doAction(getDelegate());
     }
 }

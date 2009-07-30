@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
  * @since Jul 14, 2009
  */
 public abstract class AbstractFileBackedNumber extends AbstractMutableNumber implements FileBackedNumber {
-    protected boolean closed = true;
+    protected boolean closed = false;
 
     @NotNull
     protected FileChannelProvider provider;

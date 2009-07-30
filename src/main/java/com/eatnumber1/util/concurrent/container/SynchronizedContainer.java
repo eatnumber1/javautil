@@ -16,7 +16,6 @@
 
 package com.eatnumber1.util.concurrent.container;
 
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.facade.SynchronizedFacade;
 import com.eatnumber1.util.container.Container;
 import com.eatnumber1.util.container.ContainerAction;

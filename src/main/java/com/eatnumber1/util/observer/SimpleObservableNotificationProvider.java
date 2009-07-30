@@ -1,7 +1,6 @@
 package com.eatnumber1.util.observer;
 
 import com.eatnumber1.util.collections.concurrent.SynchronizedCollection;
-import com.eatnumber1.util.compat.Override;
 import java.util.Collection;
 import java.util.concurrent.locks.Lock;
 import org.jetbrains.annotations.NotNull;

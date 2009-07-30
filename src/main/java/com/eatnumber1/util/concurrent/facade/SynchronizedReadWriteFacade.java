@@ -16,7 +16,6 @@
 
 package com.eatnumber1.util.concurrent.facade;
 
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.lock.SynchronizedReadWriteLockProvider;
 import com.eatnumber1.util.facade.Facade;
 import java.util.concurrent.locks.Lock;

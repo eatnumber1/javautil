@@ -16,10 +16,9 @@
 
 package com.eatnumber1.util.compression;
 
-import com.eatnumber1.util.compat.DeflaterInputStream;
-import com.eatnumber1.util.compat.Override;
 import java.io.InputStream;
 import java.util.zip.Deflater;
+import java.util.zip.DeflaterInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 import net.jcip.annotations.NotThreadSafe;

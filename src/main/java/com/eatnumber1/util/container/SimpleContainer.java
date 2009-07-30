@@ -16,7 +16,6 @@
 
 package com.eatnumber1.util.container;
 
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.facade.SimpleFacade;
 import org.jetbrains.annotations.NotNull;
 

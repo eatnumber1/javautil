@@ -16,7 +16,6 @@
 
 package com.eatnumber1.util.compression;
 
-import com.eatnumber1.util.compat.Override;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;

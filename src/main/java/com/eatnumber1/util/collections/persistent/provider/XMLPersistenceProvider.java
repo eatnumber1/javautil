@@ -17,7 +17,6 @@
 package com.eatnumber1.util.collections.persistent.provider;
 
 import com.eatnumber1.util.collections.persistent.PersistenceException;
-import com.eatnumber1.util.compat.Override;
 import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
 import java.io.ByteArrayInputStream;

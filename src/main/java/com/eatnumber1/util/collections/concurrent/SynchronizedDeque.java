@@ -16,7 +16,7 @@
 
 package com.eatnumber1.util.collections.concurrent;
 
-import com.eatnumber1.util.compat.Deque;
+import java.util.Deque;
 import net.jcip.annotations.ThreadSafe;
 
 /**

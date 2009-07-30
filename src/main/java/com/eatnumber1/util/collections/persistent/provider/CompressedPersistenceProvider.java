@@ -17,7 +17,6 @@
 package com.eatnumber1.util.collections.persistent.provider;
 
 import com.eatnumber1.util.collections.persistent.PersistenceException;
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.compression.CompressionException;
 import com.eatnumber1.util.compression.CompressionProvider;
 import com.eatnumber1.util.facade.SimpleFacade;

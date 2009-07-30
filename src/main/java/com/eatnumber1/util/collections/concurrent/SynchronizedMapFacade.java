@@ -16,7 +16,6 @@
 
 package com.eatnumber1.util.collections.concurrent;
 
-import com.eatnumber1.util.compat.Override;
 import com.eatnumber1.util.concurrent.facade.SynchronizedReadWriteFacade;
 import java.util.Collection;
 import java.util.Map;

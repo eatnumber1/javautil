@@ -16,7 +16,6 @@
 
 package com.eatnumber1.util.facade;
 
-import com.eatnumber1.util.compat.Override;
 import org.jetbrains.annotations.Nullable;
 
 /**

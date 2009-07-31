@@ -16,8 +16,8 @@
 
 package com.eatnumber1.util.collections.persistent;
 
-import com.eatnumber1.util.collections.persistent.provider.SerializablePersistenceProvider;
 import com.eatnumber1.util.io.FileUtils;
+import com.eatnumber1.util.persistent.provider.SerializablePersistenceProvider;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;

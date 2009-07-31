@@ -16,14 +16,14 @@
 
 package com.eatnumber1.util.collections.persistent;
 
-import com.eatnumber1.util.collections.persistent.channel.FileChannelProvider;
-import com.eatnumber1.util.collections.persistent.channel.FileChannelProviderFactory;
-import com.eatnumber1.util.collections.persistent.channel.FileChannelVisitor;
-import com.eatnumber1.util.collections.persistent.channel.SimpleFileChannelProvider;
-import com.eatnumber1.util.collections.persistent.numbers.FileBackedInteger;
-import com.eatnumber1.util.collections.persistent.numbers.FileBackedUnmappedInteger;
-import com.eatnumber1.util.collections.persistent.provider.PersistenceProvider;
 import com.eatnumber1.util.io.FileUtils;
+import com.eatnumber1.util.persistent.channel.FileChannelProvider;
+import com.eatnumber1.util.persistent.channel.FileChannelProviderFactory;
+import com.eatnumber1.util.persistent.channel.FileChannelVisitor;
+import com.eatnumber1.util.persistent.channel.SimpleFileChannelProvider;
+import com.eatnumber1.util.persistent.numbers.FileBackedInteger;
+import com.eatnumber1.util.persistent.numbers.FileBackedUnmappedInteger;
+import com.eatnumber1.util.persistent.provider.PersistenceProvider;
 import java.io.EOFException;
 import java.io.File;
 import java.io.IOException;

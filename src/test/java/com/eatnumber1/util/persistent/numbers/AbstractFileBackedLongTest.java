@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.persistent;
+package com.eatnumber1.util.persistent.numbers;
 
 import java.io.IOException;
 import org.junit.Assert;
@@ -24,17 +24,17 @@ import org.junit.Test;
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public abstract class AbstractFileBackedIntegerTest extends AbstractFileBackedNumberTest {
+public abstract class AbstractFileBackedLongTest extends AbstractFileBackedNumberTest {
     @Test
-    public void persistentIntValue() throws IOException {
-        number.intValue(Integer.MAX_VALUE);
-        initNumber();
-        Assert.assertEquals(Integer.MAX_VALUE, number.intValue());
+    public void setLongValue() {
+        number.longValue(Long.MAX_VALUE);
+        Assert.assertEquals(Long.MAX_VALUE, number.longValue());
     }
 
     @Test
-    public void setIntValue() {
-        number.intValue(Integer.MAX_VALUE);
-        Assert.assertEquals(Integer.MAX_VALUE, number.intValue());
+    public void persistentLongValue() throws IOException {
+        number.longValue(Long.MAX_VALUE);
+        initNumber();
+        Assert.assertEquals(Long.MAX_VALUE, number.longValue());
     }
 }

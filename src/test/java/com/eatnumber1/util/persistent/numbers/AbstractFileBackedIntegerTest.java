@@ -14,22 +14,27 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.persistent;
+package com.eatnumber1.util.persistent.numbers;
 
-import com.eatnumber1.util.persistent.numbers.FileBackedNumber;
-import com.eatnumber1.util.persistent.numbers.FileBackedUnmappedLong;
-import java.io.File;
 import java.io.IOException;
-import org.jetbrains.annotations.NotNull;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * @author Russell Harmon
  * @since Jul 27, 2009
  */
-public class FileBackedUnmappedLongTest extends AbstractFileBackedLongTest {
-    @NotNull
-    @Override
-    protected FileBackedNumber newNumber( @NotNull File file ) throws IOException {
-        return new FileBackedUnmappedLong(file);
+public abstract class AbstractFileBackedIntegerTest extends AbstractFileBackedNumberTest {
+    @Test
+    public void persistentIntValue() throws IOException {
+        number.intValue(Integer.MAX_VALUE);
+        initNumber();
+        Assert.assertEquals(Integer.MAX_VALUE, number.intValue());
+    }
+
+    @Test
+    public void setIntValue() {
+        number.intValue(Integer.MAX_VALUE);
+        Assert.assertEquals(Integer.MAX_VALUE, number.intValue());
     }
 }

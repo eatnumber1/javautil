@@ -14,7 +14,7 @@
  *    limitations under the License.
  */
 
-package com.eatnumber1.util.persistent;
+package com.eatnumber1.util.persistent.numbers;
 
 import com.eatnumber1.util.persistent.numbers.FileBackedMappedInteger;
 import com.eatnumber1.util.persistent.numbers.FileBackedNumber;
